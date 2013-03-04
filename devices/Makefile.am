@@ -30,6 +30,7 @@ include $(top_srcdir)/Makefile.kbuild
 
 SUBDIRS = \
 	ccat \
+	cx2100 \
 	e1000 \
 	e1000e \
 	igb
