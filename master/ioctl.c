@@ -2115,7 +2115,11 @@ static ATTRIBUTES int ec_ioctl_send(
     if (ec_ioctl_lock_down_interruptible(&master->master_sem))
         return -EINTR;
 
-    sent_bytes = ecrt_master_send(master);
+    if (master->send_cb != NULL) {
+        master->send_cb(master->cb_data);
+        sent_bytes = 0;
+    } else
+        sent_bytes = ecrt_master_send(master);
 
     ec_ioctl_lock_up(&master->master_sem);
 
@@ -2147,7 +2151,10 @@ static ATTRIBUTES int ec_ioctl_receive(
     if (ec_ioctl_lock_down_interruptible(&master->master_sem))
         return -EINTR;
 
-    ecrt_master_receive(master);
+    if (master->receive_cb != NULL)
+        master->receive_cb(master->cb_data);
+    else
+        ecrt_master_receive(master);
 
     ec_ioctl_lock_up(&master->master_sem);
     return 0;
