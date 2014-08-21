@@ -75,6 +75,7 @@ noinst_HEADERS = \
 	soe_request.c soe_request.h \
 	sync.c sync.h \
 	sync_config.c sync_config.h \
-	voe_handler.c voe_handler.h
+	voe_handler.c voe_handler.h \
+	dict_request.c dict_request.h
 
 #------------------------------------------------------------------------------
