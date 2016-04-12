@@ -291,7 +291,7 @@ static int ccat_dma_init(struct ccat_dma_mem *const dma, size_t channel,
 	iowrite32((u32) phys | ((phys_hi) > 0), ioaddr);
 	iowrite32(phys_hi, ioaddr + 4);
 
-	pr_debug
+	pr_info
 	    ("DMA%llu mem initialized\n base:         0x%p\n start:        0x%p\n phys:         0x%09llx\n pci addr:     0x%01x%08x\n size:         %llu |%llx bytes.\n",
 	     (u64) channel, dma->base, fifo->dma.start, (u64) dma->phys,
 	     ioread32(ioaddr + 4), ioread32(ioaddr),
@@ -749,12 +749,14 @@ static void poll_link(struct ccat_eth_priv *const priv)
 static void poll_rx(struct ccat_eth_priv *const priv)
 {
 	struct ccat_eth_fifo *const fifo = &priv->rx_fifo;
-	const size_t len = fifo->ops->ready(fifo);
+	size_t rx_per_poll = FIFO_LENGTH / 2;
+	size_t len = fifo->ops->ready(fifo);
 
-	if (len) {
+	while (len && --rx_per_poll) {
 		priv->receive(priv, len);
 		fifo->ops->add(fifo);
 		ccat_eth_fifo_inc(fifo);
+		len = fifo->ops->ready(fifo);
 	}
 }
 
