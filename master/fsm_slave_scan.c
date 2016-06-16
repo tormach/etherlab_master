@@ -108,7 +108,7 @@ void ec_fsm_slave_scan_init(
     fsm->fsm_pdo = fsm_pdo;
 
     // init sub state machines
-    ec_fsm_sii_init(&fsm->fsm_sii, fsm->datagram);
+    ec_fsm_sii_init(&fsm->fsm_sii);
 }
 
 /*****************************************************************************/
@@ -740,7 +740,7 @@ void ec_fsm_slave_scan_state_sii_identity(
     ec_slave_t *slave = fsm->slave;
 
     while (1) {
-        if (ec_fsm_sii_exec(&fsm->fsm_sii))
+        if (ec_fsm_sii_exec(&fsm->fsm_sii, fsm->datagram))
             return;
 
         if (!ec_fsm_sii_success(&fsm->fsm_sii)) {
@@ -816,7 +816,7 @@ void ec_fsm_slave_scan_state_sii_device(
 {
     ec_slave_t *slave = fsm->slave;
 
-    if (ec_fsm_sii_exec(&fsm->fsm_sii))
+    if (ec_fsm_sii_exec(&fsm->fsm_sii, fsm->datagram))
         return;
 
     if (!ec_fsm_sii_success(&fsm->fsm_sii)) {
@@ -835,7 +835,7 @@ void ec_fsm_slave_scan_state_sii_device(
         fsm->sii_offset += 2;
         ec_fsm_sii_read(&fsm->fsm_sii, slave, fsm->sii_offset,
                         EC_FSM_SII_USE_CONFIGURED_ADDRESS);
-        ec_fsm_sii_exec(&fsm->fsm_sii); // execute state immediately
+        ec_fsm_sii_exec(&fsm->fsm_sii, fsm->datagram); // execute state immediately
         return;
     }
 
@@ -988,7 +988,7 @@ void ec_fsm_slave_scan_state_sii_size(
     ec_slave_t *slave = fsm->slave;
     uint16_t cat_type, cat_size;
 
-    if (ec_fsm_sii_exec(&fsm->fsm_sii))
+    if (ec_fsm_sii_exec(&fsm->fsm_sii, fsm->datagram))
         return;
 
     if (!slave->sii_image) {
@@ -1028,7 +1028,7 @@ void ec_fsm_slave_scan_state_sii_size(
         fsm->sii_offset = next_offset;
         ec_fsm_sii_read(&fsm->fsm_sii, slave, fsm->sii_offset,
                         EC_FSM_SII_USE_CONFIGURED_ADDRESS);
-        ec_fsm_sii_exec(&fsm->fsm_sii); // execute state immediately
+        ec_fsm_sii_exec(&fsm->fsm_sii, fsm->datagram); // execute state immediately
         return;
     }
 
@@ -1065,7 +1065,7 @@ alloc_sii:
     fsm->state = ec_fsm_slave_scan_state_sii_data;
     ec_fsm_sii_read(&fsm->fsm_sii, slave, fsm->sii_offset,
             EC_FSM_SII_USE_CONFIGURED_ADDRESS);
-    ec_fsm_sii_exec(&fsm->fsm_sii); // execute state immediately
+    ec_fsm_sii_exec(&fsm->fsm_sii, fsm->datagram); // execute state immediately
 }
 
 /*****************************************************************************/
@@ -1079,7 +1079,7 @@ void ec_fsm_slave_scan_state_sii_data(ec_fsm_slave_scan_t *fsm
 {
     ec_slave_t *slave = fsm->slave;
 
-    if (ec_fsm_sii_exec(&fsm->fsm_sii)) return;
+    if (ec_fsm_sii_exec(&fsm->fsm_sii, fsm->datagram)) return;
 
     if (!ec_fsm_sii_success(&fsm->fsm_sii)) {
         fsm->slave->error_flag = 1;
@@ -1108,7 +1108,7 @@ void ec_fsm_slave_scan_state_sii_data(ec_fsm_slave_scan_t *fsm
         fsm->sii_offset += 2;
         ec_fsm_sii_read(&fsm->fsm_sii, slave, fsm->sii_offset,
                         EC_FSM_SII_USE_CONFIGURED_ADDRESS);
-        ec_fsm_sii_exec(&fsm->fsm_sii); // execute state immediately
+        ec_fsm_sii_exec(&fsm->fsm_sii, fsm->datagram); // execute state immediately
         return;
     }
 
