@@ -261,9 +261,9 @@ int ecrt_slave_config_pdos(ec_slave_config_t *sc,
                 if (ret)
                     return ret;
 
-                if (pdo_info->n_entries && pdo_info->entries) {
-                    ecrt_slave_config_pdo_mapping_clear(sc, pdo_info->index);
+                ecrt_slave_config_pdo_mapping_clear(sc, pdo_info->index);
 
+                if (pdo_info->n_entries && pdo_info->entries) {
                     for (k = 0; k < pdo_info->n_entries; k++) {
                         entry_info = &pdo_info->entries[k];
 
