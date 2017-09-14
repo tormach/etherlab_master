@@ -605,8 +605,6 @@ void ec_datagram_print_wc_error(
 {
     if (datagram->working_counter == 0) {
         printk(KERN_CONT "No response.");
-    }
-    else if (datagram->working_counter > 1) {
         printk(KERN_CONT "%u slaves responded!", datagram->working_counter);
     }
     else {
