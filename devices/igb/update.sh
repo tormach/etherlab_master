@@ -24,6 +24,6 @@ for f in $FILES; do
     cp -v $o $e
     op=${f/\./-$PREVER-orig.}
     ep=${f/\./-$PREVER-ethercat.}
-    diff -u $op $ep | patch -p1 $e
+    diff -up $op $ep | patch -p1 $e
     git add $o $e
 done
