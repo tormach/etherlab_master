@@ -122,6 +122,7 @@ void cyclic_task(struct timer_list *t)
 void cyclic_task(unsigned long data)
 #endif
 {
+
     // receive process data
     down(&master_sem);
     ecrt_master_receive(master);

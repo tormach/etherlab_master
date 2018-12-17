@@ -573,8 +573,10 @@ void el60xx_port_run(el60xx_port_t *port, u8 *pd)
                 printk(KERN_INFO PFX "%s: Received %u bytes.\n",
                         port->name, rx_data_size);
 #endif
-                ectty_rx_data(port->tty, rx_data, rx_data_size);
-                port->rx_accepted_toggle = !port->rx_accepted_toggle;
+                if (rx_data_size) {
+	                ectty_rx_data(port->tty, rx_data, rx_data_size);
+	                port->rx_accepted_toggle = !port->rx_accepted_toggle;
+                }   
             }
 
             port->control =
