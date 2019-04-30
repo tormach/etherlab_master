@@ -1615,6 +1615,7 @@ static ATTRIBUTES int ec_ioctl_eoe_handler(
 
 /*****************************************************************************/
 
+#ifdef EC_EOE
 /** Request EoE IP parameter setting.
  *
  * \return Zero on success, otherwise a negative error code.
@@ -1695,6 +1696,7 @@ static ATTRIBUTES int ec_ioctl_slave_eoe_ip_param(
 
     return req.state == EC_INT_REQUEST_SUCCESS ? 0 : -EIO;
 }
+#endif
 
 /*****************************************************************************/
 
@@ -4597,6 +4599,7 @@ long EC_IOCTL(
         case EC_IOCTL_SLAVE_SOE_READ:
             ret = ec_ioctl_slave_soe_read(master, arg);
             break;
+#ifdef EC_EOE
         case EC_IOCTL_SLAVE_EOE_IP_PARAM:
             if (!ctx->writable) {
                 ret = -EPERM;
@@ -4604,6 +4607,7 @@ long EC_IOCTL(
             }
             ret = ec_ioctl_slave_eoe_ip_param(master, arg);
             break;
+#endif
         case EC_IOCTL_SLAVE_SOE_WRITE:
             if (!ctx->writable) {
                 ret = -EPERM;
