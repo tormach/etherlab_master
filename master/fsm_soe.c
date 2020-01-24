@@ -1,8 +1,6 @@
 /******************************************************************************
  *
- *  $Id$
- *
- *  Copyright (C) 2006-2008  Florian Pose, Ingenieurgemeinschaft IgH
+ *  Copyright (C) 2006-2020  Florian Pose, Ingenieurgemeinschaft IgH
  *
  *  This file is part of the IgH EtherCAT Master.
  *
@@ -559,7 +557,6 @@ void ec_fsm_soe_write_next_fragment(
         ec_print_data(data, EC_SOE_SIZE + fsm->fragment_size);
     }
 
-    req->jiffies_sent = jiffies;
     fsm->state = ec_fsm_soe_write_request;
 }
 
@@ -596,6 +593,7 @@ void ec_fsm_soe_write_start(
     fsm->offset = 0;
     fsm->retries = EC_FSM_RETRIES;
     ec_fsm_soe_write_next_fragment(fsm, datagram);
+    req->jiffies_sent = jiffies;
 }
 
 /*****************************************************************************/
@@ -648,6 +646,7 @@ void ec_fsm_soe_write_request(
         // next fragment
         fsm->retries = EC_FSM_RETRIES;
         ec_fsm_soe_write_next_fragment(fsm, datagram);
+        fsm->request->jiffies_sent = jiffies;
     } else {
         // all fragments sent; query response
         fsm->jiffies_start = fsm->datagram->jiffies_sent;
