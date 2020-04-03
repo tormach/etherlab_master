@@ -539,7 +539,12 @@ static int ccat_eth_priv_init_dma(struct ccat_eth_priv *priv)
 	dma->dev = &pdev->dev;
 	dma->size = CCAT_ALIGNMENT * 3;
 	dma->base =
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0)
+        /* since kernel 5 memory is zero'd implicitly */
+	    dma_alloc_coherent(dma->dev, dma->size, &dma->phys, GFP_KERNEL);
+#else
 	    dma_zalloc_coherent(dma->dev, dma->size, &dma->phys, GFP_KERNEL);
+#endif
 	if (!dma->base || !dma->phys) {
 		pr_err("init DMA memory failed.\n");
 		return -ENOMEM;
