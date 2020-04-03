@@ -1,8 +1,6 @@
 /******************************************************************************
  *
- *  $Id$
- *
- *  Copyright (C) 2006-2012  Florian Pose, Ingenieurgemeinschaft IgH
+ *  Copyright (C) 2006-2020  Florian Pose, Ingenieurgemeinschaft IgH
  *
  *  This file is part of the IgH EtherCAT Master.
  *
@@ -61,8 +59,14 @@ static int eccdev_mmap(struct file *, struct vm_area_struct *);
  */
 #define PAGE_FAULT_VERSION KERNEL_VERSION(2, 6, 23)
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 17, 0)
+# define FAULT_RETURN_TYPE int
+#else
+# define FAULT_RETURN_TYPE vm_fault_t
+#endif
+
 #if LINUX_VERSION_CODE >= PAGE_FAULT_VERSION
-static int eccdev_vma_fault(
+static FAULT_RETURN_TYPE eccdev_vma_fault(
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 11, 0)
         struct vm_area_struct *,
 #endif
@@ -256,7 +260,7 @@ int eccdev_mmap(
  *
  * \return Zero on success, otherwise a negative error code.
  */
-static int eccdev_vma_fault(
+static FAULT_RETURN_TYPE eccdev_vma_fault(
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 11, 0)
         struct vm_area_struct *vma, /**< Virtual memory area. */
 #endif
