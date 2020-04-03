@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- *  $Id$
+ *  $Id: CommandFoeWrite.cpp,v 4f682084c643 2010/10/25 08:12:26 fp $
  *
  *  Copyright (C) 2006-2009  Florian Pose, Ingenieurgemeinschaft IgH
  *
@@ -140,7 +140,8 @@ void CommandFoeWrite::execute(const StringVector &args)
 
     // write data via foe to the slave
     data.offset = 0;
-    strncpy(data.file_name, storeFileName.c_str(), sizeof(data.file_name));
+    strncpy(data.file_name, storeFileName.c_str(),
+            sizeof(data.file_name) - 1);
 
     try {
         m.writeFoe(&data);
