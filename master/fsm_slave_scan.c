@@ -450,6 +450,8 @@ void ec_fsm_slave_scan_enter_sii_size(
 {
     // Start fetching SII size
 
+    EC_SLAVE_DBG(fsm->slave, 1, "Determining SII size.\n");
+
     fsm->sii_offset = EC_FIRST_SII_CATEGORY_OFFSET; // first category header
     ec_fsm_sii_read(&fsm->fsm_sii, fsm->slave, fsm->sii_offset,
             EC_FSM_SII_USE_CONFIGURED_ADDRESS);
@@ -590,6 +592,11 @@ void ec_fsm_slave_scan_state_sii_size(
 
     if (cat_type != 0xFFFF) { // not the last category
         off_t next_offset = 2UL + fsm->sii_offset + cat_size;
+
+        EC_SLAVE_DBG(slave, 1, "Found category type %u with size %u."
+                " Proceeding to offset %zu.\n",
+                cat_type, cat_size, next_offset);
+
         if (next_offset >= EC_MAX_SII_SIZE) {
             EC_SLAVE_WARN(slave, "SII size exceeds %u words"
                     " (0xffff limiter missing?).\n", EC_MAX_SII_SIZE);
@@ -637,7 +644,8 @@ alloc_sii:
    Slave scan state: SII DATA.
 */
 
-void ec_fsm_slave_scan_state_sii_data(ec_fsm_slave_scan_t *fsm /**< slave state machine */)
+void ec_fsm_slave_scan_state_sii_data(ec_fsm_slave_scan_t *fsm
+        /**< slave state machine */)
 {
     ec_slave_t *slave = fsm->slave;
     uint16_t *cat_word, cat_type, cat_size;
@@ -701,6 +709,70 @@ void ec_fsm_slave_scan_state_sii_data(ec_fsm_slave_scan_t *fsm /**< slave state 
         EC_READ_U16(slave->sii_words + 0x001B);
     slave->sii.mailbox_protocols =
         EC_READ_U16(slave->sii_words + 0x001C);
+    if (slave->sii.mailbox_protocols) {
+        int need_delim = 0;
+        uint16_t all = EC_MBOX_AOE | EC_MBOX_COE | EC_MBOX_FOE |
+            EC_MBOX_SOE | EC_MBOX_VOE;
+        if ((slave->sii.mailbox_protocols & all) &&
+                slave->master->debug_level >= 1) {
+            EC_SLAVE_DBG(slave, 1, "Slave announces to support ");
+            if (slave->sii.mailbox_protocols & EC_MBOX_AOE) {
+                printk(KERN_CONT "AoE");
+                need_delim = 1;
+            }
+            if (slave->sii.mailbox_protocols & EC_MBOX_COE) {
+                if (need_delim) {
+                    printk(KERN_CONT ", ");
+                }
+                printk(KERN_CONT "CoE");
+                need_delim = 1;
+            }
+            if (slave->sii.mailbox_protocols & EC_MBOX_FOE) {
+                if (need_delim) {
+                    printk(KERN_CONT ", ");
+                }
+                printk(KERN_CONT "FoE");
+                need_delim = 1;
+            }
+            if (slave->sii.mailbox_protocols & EC_MBOX_SOE) {
+                if (need_delim) {
+                    printk(KERN_CONT ", ");
+                }
+                printk(KERN_CONT "SoE");
+                need_delim = 1;
+            }
+            if (slave->sii.mailbox_protocols & EC_MBOX_VOE) {
+                if (need_delim) {
+                    printk(KERN_CONT ", ");
+                }
+                printk(KERN_CONT "VoE");
+                need_delim = 1;
+            }
+            printk(KERN_CONT ".\n");
+        }
+        if (slave->sii.mailbox_protocols & ~all) {
+            EC_SLAVE_DBG(slave, 1, "Slave announces to support unknown"
+                    " mailbox protocols 0x%04X.",
+                    slave->sii.mailbox_protocols & ~all);
+        }
+    }
+    else {
+        EC_SLAVE_DBG(slave, 1, "Slave announces to support no mailbox"
+                " protocols.");
+    }
+
+    if (slave->sii.boot_rx_mailbox_offset == 0xffff ||
+            slave->sii.boot_rx_mailbox_size == 0xffff ||
+            slave->sii.boot_tx_mailbox_offset == 0xffff ||
+            slave->sii.boot_tx_mailbox_size == 0xffff ||
+            slave->sii.std_rx_mailbox_offset == 0xffff ||
+            slave->sii.std_rx_mailbox_size == 0xffff ||
+            slave->sii.std_tx_mailbox_offset == 0xffff ||
+            slave->sii.std_tx_mailbox_size == 0xffff) {
+        slave->sii.mailbox_protocols = 0x0000;
+        EC_SLAVE_ERR(slave, "Invalid mailbox settings in SII."
+                " Disabling mailbox communication.");
+    }
 
     if (slave->sii_nwords == EC_FIRST_SII_CATEGORY_OFFSET) {
         // sii does not contain category data
@@ -919,6 +991,7 @@ void ec_fsm_slave_scan_state_sync(
 {
     ec_datagram_t *datagram = fsm->datagram;
     ec_slave_t *slave = fsm->slave;
+    uint16_t tx_offset, tx_size, rx_offset, rx_size;
 
     if (datagram->state == EC_DATAGRAM_TIMED_OUT && fsm->retries--)
         return;
@@ -939,10 +1012,31 @@ void ec_fsm_slave_scan_state_sync(
         return;
     }
 
-    slave->configured_rx_mailbox_offset = EC_READ_U16(datagram->data);
-    slave->configured_rx_mailbox_size = EC_READ_U16(datagram->data + 2);
-    slave->configured_tx_mailbox_offset = EC_READ_U16(datagram->data + 8);
-    slave->configured_tx_mailbox_size = EC_READ_U16(datagram->data + 10);
+    rx_offset = EC_READ_U16(datagram->data);
+    rx_size = EC_READ_U16(datagram->data + 2);
+    tx_offset = EC_READ_U16(datagram->data + 8);
+    tx_size = EC_READ_U16(datagram->data + 10);
+
+    if (rx_size == 0xffff) {
+        fsm->state = ec_fsm_slave_scan_state_error;
+        slave->sii.mailbox_protocols = 0x0000;
+        EC_SLAVE_ERR(slave, "Invalid RX mailbox size (%u) configured."
+                " Disabling mailbox communication.", rx_size);
+        return;
+    }
+
+    if (tx_size == 0xffff) {
+        fsm->state = ec_fsm_slave_scan_state_error;
+        slave->sii.mailbox_protocols = 0x0000;
+        EC_SLAVE_ERR(slave, "Invalid TX mailbox size (%u) configured."
+                " Disabling mailbox communication.", tx_size);
+        return;
+    }
+
+    slave->configured_rx_mailbox_offset = rx_offset;
+    slave->configured_rx_mailbox_size = rx_size;
+    slave->configured_tx_mailbox_offset = tx_offset;
+    slave->configured_tx_mailbox_size = tx_size;
 
     EC_SLAVE_DBG(slave, 1, "Mailbox configuration:\n");
     EC_SLAVE_DBG(slave, 1, " RX offset=0x%04x size=%u\n",
