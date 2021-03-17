@@ -23,5 +23,5 @@ for f in $KERNELDIR/drivers/net/ethernet/intel/e1000/*.[ch]; do
     ep=${b/\./-$PREVER-ethercat.}
     diff -u $op $ep | patch -p1 $e
     sed -i s/$PREVER-ethercat.h/$KERNELVER-ethercat.h/ $e
-    hg add $o $e
+    git add $o $e
 done

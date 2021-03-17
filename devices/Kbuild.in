@@ -34,7 +34,7 @@
 REV := $(shell if test -s $(src)/../revision; then \
 		cat $(src)/../revision; \
 	else \
-		hg id -i $(src)/.. 2>/dev/null || echo "unknown"; \
+		git -C $(src)/.. describe 2>/dev/null || echo "unknown"; \
 	fi)
 
 ifeq (@ENABLE_GENERIC@,1)

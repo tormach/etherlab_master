@@ -36,7 +36,7 @@ TOPDIR := $(src)/../..
 REV := $(shell if test -s $(TOPDIR)/revision; then \
 		cat $(TOPDIR)/revision; \
 	else \
-		hg id -i $(TOPDIR) 2>/dev/null || echo "unknown"; \
+		git -C $(TOPDIR) describe 2>/dev/null || echo "unknown"; \
 	fi)
 
 ifeq (@ENABLE_IGB@,1)

@@ -126,7 +126,7 @@ endif
 REV = `if test -s $(top_srcdir)/revision; then \
 		cat $(top_srcdir)/revision; \
 	else \
-		hg id -i $(top_srcdir) 2>/dev/null || echo "unknown"; \
+		git -C $(top_srcdir) describe 2>/dev/null || echo "unknown"; \
 	fi`
 
 ethercat_CXXFLAGS = \

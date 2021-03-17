@@ -25,5 +25,5 @@ for f in $FILES; do
     op=${f/\./-$PREVER-orig.}
     ep=${f/\./-$PREVER-ethercat.}
     diff -u $op $ep | patch -p1 $e
-    hg add $o $e
+    git add $o $e
 done

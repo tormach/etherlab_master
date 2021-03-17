@@ -102,7 +102,7 @@ endif # ENABLE_RTDM
 REV := $(shell if test -s $(src)/../revision; then \
 		cat $(src)/../revision; \
 	else \
-		hg id -i $(src)/.. 2>/dev/null || echo "unknown"; \
+		git -C $(src)/.. describe 2>/dev/null || echo "unknown"; \
 	fi)
 
 CFLAGS_module.o := -DREV=$(REV)

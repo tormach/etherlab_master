@@ -91,13 +91,13 @@ clean-local:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" clean
 
 mydist:
-	hg log --style=changelog $(srcdir) > ChangeLog
-	@REV=`hg id -i $(srcdir)` && \
+	git -C $(srcdir) log > ChangeLog
+	@REV=`git -C $(srcdir) describe` && \
 		$(MAKE) dist-bzip2 distdir=$(PACKAGE)-$(VERSION)-$${REV}
 
 dist-hook:
-	if which hg >/dev/null 2>&1; then \
-		hg id -i $(srcdir) 2>/dev/null >$(distdir)/revision; \
+	if which git >/dev/null 2>&1; then \
+		git -C $(srcdir) describe 2>/dev/null >$(distdir)/revision; \
 	fi
 
 mrproper: clean cleandoc

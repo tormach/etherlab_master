@@ -35,7 +35,7 @@ AC_PREREQ(2.59)
 # - Write NEWS entry with changes since last release
 # - Check for complete Doxygen comments
 # - Update version number in documentation
-# - Update the ChangeLog -> hg log -bstable-1.5 --style=changelog > ChangeLog
+# - Update the ChangeLog -> git log > ChangeLog
 # - Update version number below
 # - make dist-bzip2
 #
