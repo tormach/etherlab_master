@@ -2109,7 +2109,7 @@ up, the passing of new socket buffers is suspended with a call to
 \paragraph{Creation of EoE Handlers}
 
 During bus scanning (see \autoref{sec:fsm-scan}), the master determines the
-supported mailbox protocols foe each slave. This is done by examining the
+supported mailbox protocols for each slave. This is done by examining the
 ``Supported Mailbox Protocols'' mask field at word address 0x001C of the
 SII\index{SII}. If bit 1 is set, the slave supports the EoE protocol. In this
 case, an EoE handler is created for that slave.
