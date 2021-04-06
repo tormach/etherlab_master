@@ -61,6 +61,10 @@ Future issues:
     - Output error after usage.
 * Fix bus scan hang when calling ecrt_master_deactivate().
 
+Documentation
+
+* Update FSM graphs.
+
 Smaller issues:
 
 * Read out CRC counters.
