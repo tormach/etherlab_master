@@ -56,6 +56,8 @@ pdf: $(EXT_FILES)
 	$(MAKE) -C images
 	$(MAKE) -C graphs
 	pdflatex $(LATEX_OPTIONS) $(FILE)
+# compile twice to update the table of contents
+	pdflatex $(LATEX_OPTIONS) $(FILE)
 
 index:
 	makeindex $(FILE)
