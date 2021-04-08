@@ -45,6 +45,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2 subdir-objects])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_MACRO_DIR([m4])
+PKG_INSTALLDIR()
 
 #------------------------------------------------------------------------------
 # Global
@@ -1170,6 +1171,7 @@ AC_CONFIG_FILES([
         examples/xenomai_posix/Makefile
         include/Makefile
         lib/Makefile
+        lib/libethercat.pc
         m4/Makefile
         master/Kbuild
         master/Makefile

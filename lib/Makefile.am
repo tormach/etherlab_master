@@ -73,6 +73,8 @@ libethercat_la_CFLAGS = -fno-strict-aliasing -Wall -I$(top_srcdir)
 #
 libethercat_la_LDFLAGS = -version-info 2:0:1
 
+pkgconfig_DATA = libethercat.pc
+
 #------------------------------------------------------------------------------
 
 if ENABLE_RTDM
