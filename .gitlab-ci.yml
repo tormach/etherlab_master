@@ -2,7 +2,7 @@ build:
     stage: build
     script:
         - ./bootstrap
-        - ./configure
+        - ./configure --with-linux-dir=/usr/src/linux
         - make all modules
 
     
