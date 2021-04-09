@@ -10,5 +10,6 @@ build:
         - ./configure --with-linux-dir=/usr/src/linux-headers-4.19.0-16-amd64 --disable-8139too
         - make -j8 all modules
 
-    
+include:
+    - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
         
