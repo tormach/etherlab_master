@@ -3,12 +3,12 @@ build:
 
     before_script:
         - apt update
-        - apt install linux-source
+        - apt install -y linux-source linux-headers-4.19.0-16-all
 
     script:
         - ./bootstrap
-        - ./configure --with-linux-dir=/usr/src/linux
-        - make all modules
+        - ./configure --with-linux-dir=/usr/src/linux-headers-4.19.0-16-amd64 --disable-8139too
+        - make -j8 all modules
 
     
         
