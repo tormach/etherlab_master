@@ -64,7 +64,7 @@ string CommandPdos::helpString(const string &binaryBaseName) const
         << "Enable 1" << endl
         << endl
         << "2) Assigned PDOs - PDO direction, hexadecimal index and" << endl
-        << "   the PDO name, if avaliable. Note that a 'Tx' and 'Rx'" << endl
+        << "   the PDO name, if available. Note that a 'Tx' and 'Rx'" << endl
         << "   are seen from the slave's point of view. Example:" << endl
         << endl
         << "   TxPDO 0x1a00 \"Channel1\"" << endl

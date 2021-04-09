@@ -77,7 +77,7 @@ string CommandDomains::helpString(const string &binaryBaseName) const
         << endl
         << "Command-specific options:" << endl
         << "  --domain  -d <index>  Positive numerical domain index." << endl
-        << "                        If ommitted, all domains are" << endl
+        << "                        If omitted, all domains are" << endl
         << "                        displayed." << endl
         << endl
         << "  --verbose -v          Show FMMUs and process data" << endl

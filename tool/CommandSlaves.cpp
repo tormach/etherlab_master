@@ -58,7 +58,7 @@ string CommandSlaves::helpString(const string &binaryBaseName) const
         << endl
         << "1  5555:0  PREOP  +  EL3162 2C. Ana. Input 0-10V" << endl
         << "|  |    |  |      |  |" << endl
-        << "|  |    |  |      |  \\- Name from the SII if avaliable," << endl
+        << "|  |    |  |      |  \\- Name from the SII if available," << endl
         << "|  |    |  |      |     otherwise vendor ID and product" << endl
         << "|  |    |  |      |     code (both hexadecimal)." << endl
         << "|  |    |  |      \\- Error flag. '+' means no error," << endl
