@@ -1,0 +1,9 @@
+build:
+    stage: build
+    script:
+        - ./bootstrap
+        - ./configure
+        - make all modules
+
+    
+        
