@@ -1,5 +1,10 @@
 build:
     stage: build
+
+    before_script:
+        - apt update
+        - apt install linux-source
+
     script:
         - ./bootstrap
         - ./configure --with-linux-dir=/usr/src/linux
