@@ -67,7 +67,11 @@ static struct tty_driver *tty_driver = NULL;
 ec_tty_t *ttys[EC_TTY_MAX_DEVICES];
 struct semaphore tty_sem;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+void ec_tty_wakeup(struct timer_list *);
+#else
 void ec_tty_wakeup(unsigned long);
+#endif
 
 /*****************************************************************************/
 
@@ -200,7 +204,13 @@ int ec_tty_init(ec_tty_t *t, int minor,
     t->wakeup = 0;
     t->rx_read_idx = 0;
     t->rx_write_idx = 0;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+    timer_setup(&t->timer, ec_tty_wakeup, 0);
+#else
     init_timer(&t->timer);
+    t->timer.function = ec_tty_wakeup;
+    t->timer.data = (unsigned long) t;
+#endif
     t->tty = NULL;
     t->open_count = 0;
     sema_init(&t->sem, 1);
@@ -237,8 +247,6 @@ int ec_tty_init(ec_tty_t *t, int minor,
         return ret;
     }
 
-    t->timer.function = ec_tty_wakeup;
-    t->timer.data = (unsigned long) t;
     t->timer.expires = jiffies + 10;
     add_timer(&t->timer);
     return 0;
@@ -317,9 +325,17 @@ int ec_tty_get_serial_info(ec_tty_t *tty, struct serial_struct *data)
 
 /** Timer function.
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+void ec_tty_wakeup(struct timer_list *t)
+#else
 void ec_tty_wakeup(unsigned long data)
+#endif
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+    ec_tty_t *tty = from_timer(tty, t, timer);
+#else
     ec_tty_t *tty = (ec_tty_t *) data;
+#endif
     size_t to_recv;
 
     /* Wake up any process waiting to send data */
@@ -344,8 +360,8 @@ void ec_tty_wakeup(unsigned long data)
 #endif
 
         if (space < to_recv) {
-            printk(KERN_WARNING PFX "Insufficient space to_recv=%d space=%d\n",
-                    to_recv, space);
+            printk(KERN_WARNING PFX "Insufficient space to_recv=%zu"
+                    " space=%d\n", to_recv, space);
         }
 
         if (space < 0) {
@@ -566,8 +582,14 @@ static int ec_tty_ioctl(struct tty_struct *tty,
 
     switch (cmd) {
         case TIOCGSERIAL:
-            if (access_ok(VERIFY_WRITE,
-                        (void *) arg, sizeof(struct serial_struct))) {
+            if (
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0)
+            access_ok((void *) arg, sizeof(struct serial_struct))
+#else
+            access_ok(VERIFY_WRITE,
+                        (void *) arg, sizeof(struct serial_struct))
+#endif
+                    ) {
                 ret = ec_tty_get_serial_info(t, (struct serial_struct *) arg);
             } else {
                 ret = -EFAULT;
@@ -761,7 +783,7 @@ void ectty_free(ec_tty_t *tty)
 
 unsigned int ectty_tx_data(ec_tty_t *tty, uint8_t *buffer, size_t size)
 {
-    unsigned int data_size = min(ec_tty_tx_size(tty), size), i;
+    unsigned int data_size = min(ec_tty_tx_size(tty), (unsigned int) size), i;
 
     if (data_size)  {
 #if EC_TTY_DEBUG >= 1
@@ -794,10 +816,10 @@ void ectty_rx_data(ec_tty_t *tty, const uint8_t *buffer, size_t size)
         printk(KERN_INFO PFX "Received %u bytes.\n", size);
 #endif
 
-        to_recv = min(ec_tty_rx_space(tty), size);
+        to_recv = min(ec_tty_rx_space(tty), (unsigned int) size);
 
         if (to_recv < size) {
-            printk(KERN_WARNING PFX "Dropping %u bytes.\n", size - to_recv);
+            printk(KERN_WARNING PFX "Dropping %zu bytes.\n", size - to_recv);
         }
 
         for (i = 0; i < size; i++) {
