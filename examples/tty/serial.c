@@ -481,7 +481,7 @@ int el60xx_port_init(el60xx_port_t *port, ec_slave_config_t *sc,
     if (port->max_tx_data_size > 0) {
         port->tx_data = kmalloc(port->max_tx_data_size, GFP_KERNEL);
         if (port->tx_data == NULL) {
-            printk(KERN_ERR PFX "Failed to allocate %u bytes of TX"
+            printk(KERN_ERR PFX "Failed to allocate %zu bytes of TX"
                     " memory for %s.\n", port->max_tx_data_size, port->name);
             ret = -ENOMEM;
             goto out_free_tty;
