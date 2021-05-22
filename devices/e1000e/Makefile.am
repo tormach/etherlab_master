@@ -367,7 +367,7 @@ EXTRA_DIST = \
 	nvm-3.6-ethercat.c \
 	nvm-3.6-orig.c \
 	nvm-3.8-ethercat.c \
-	nvm-3.8-orig.c \ \
+	nvm-3.8-orig.c \
 	nvm-4.4-ethercat.c \
 	nvm-4.4-ethercat.h \
 	nvm-4.4-orig.c \
