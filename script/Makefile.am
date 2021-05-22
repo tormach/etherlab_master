@@ -42,10 +42,6 @@ EXTRA_DIST = \
 	ethercat.service.in \
 	ifup-eoe.sh
 
-BUILT_SOURCES = \
-	ethercatctl \
-	ethercat.service
-
 if HAVE_SYSTEMD
 systemdsystemunit_DATA = ethercat.service
 endif

@@ -71,16 +71,8 @@ noinst_HEADERS = \
 	globals.h
 
 EXTRA_DIST = \
-	Doxyfile.in \
 	FEATURES \
-	Kbuild.in \
 	README.EoE \
-	ethercat.spec \
-	ethercat.spec.in
-
-BUILT_SOURCES = \
-	Doxyfile \
-	Kbuild \
 	ethercat.spec
 
 modules:

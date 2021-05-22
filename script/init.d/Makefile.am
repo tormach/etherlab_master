@@ -31,8 +31,4 @@ initdir = $(sysconfdir)/init.d
 
 init_SCRIPTS = ethercat
 
-EXTRA_DIST = ethercat.in
-
-BUILT_SOURCES = ethercat
-
 #------------------------------------------------------------------------------

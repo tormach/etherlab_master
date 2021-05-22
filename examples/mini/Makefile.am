@@ -32,11 +32,7 @@
 #------------------------------------------------------------------------------
 
 EXTRA_DIST = \
-	Kbuild.in \
 	mini.c
-
-BUILT_SOURCES = \
-	Kbuild
 
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules

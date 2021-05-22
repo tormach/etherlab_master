@@ -30,11 +30,7 @@
 #------------------------------------------------------------------------------
 
 EXTRA_DIST = \
-	Kbuild.in \
 	dc_rtai_sample.c
-
-BUILT_SOURCES = \
-	Kbuild
 
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules

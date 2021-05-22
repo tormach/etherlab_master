@@ -28,7 +28,6 @@
 #------------------------------------------------------------------------------
 
 EXTRA_DIST = \
-	Kbuild.in \
 	LICENSE \
 	e1000-2.6.13-ethercat.h \
 	e1000-2.6.13-orig.h \
@@ -353,9 +352,6 @@ EXTRA_DIST = \
 	e1000_param-4.4-ethercat.c \
 	e1000_param-4.4-orig.c
 
-
-BUILT_SOURCES = \
-	Kbuild
 
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules

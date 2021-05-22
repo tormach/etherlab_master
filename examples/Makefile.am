@@ -66,10 +66,4 @@ DIST_SUBDIRS = \
 	xenomai \
 	xenomai_posix
 
-EXTRA_DIST = \
-	Kbuild.in
-
-BUILT_SOURCES = \
-	Kbuild
-
 #------------------------------------------------------------------------------

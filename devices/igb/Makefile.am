@@ -110,9 +110,6 @@ EXTRA_DIST = \
 	igb_ptp-4.4-orig.c \
 	update.sh
 
-BUILT_SOURCES = \
-	Kbuild
-
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules
 

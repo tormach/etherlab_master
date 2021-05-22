@@ -92,7 +92,6 @@ EXTRA_DIST = \
 	82571-4.4-ethercat.h \
 	82571-4.4-orig.c \
 	82571-4.4-orig.h \
-	Kbuild.in \
 	defines-2.6.32-ethercat.h \
 	defines-2.6.32-orig.h \
 	defines-2.6.33-ethercat.h \
@@ -460,9 +459,6 @@ EXTRA_DIST = \
 	regs-4.4-ethercat.h \
 	regs-4.4-orig.h \
 	update.sh
-
-BUILT_SOURCES = \
-	Kbuild
 
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules

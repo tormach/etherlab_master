@@ -32,11 +32,7 @@ noinst_HEADERS = \
 	module.c
 
 EXTRA_DIST = \
-	Kbuild.in \
 	README
-
-BUILT_SOURCES = \
-	Kbuild
 
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules

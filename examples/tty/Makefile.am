@@ -36,12 +36,6 @@ noinst_HEADERS = \
 	serial.h \
 	tty.c
 
-EXTRA_DIST = \
-	Kbuild.in
-
-BUILT_SOURCES = \
-	Kbuild
-
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules
 

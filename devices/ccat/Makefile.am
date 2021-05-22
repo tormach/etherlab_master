@@ -28,13 +28,9 @@
 #------------------------------------------------------------------------------
 
 EXTRA_DIST = \
-	Kbuild.in \
 	module.h \
 	netdev.h \
 	update.h
-
-BUILT_SOURCES = \
-	Kbuild
 
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules

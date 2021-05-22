@@ -76,12 +76,6 @@ noinst_HEADERS = \
 	sync_config.c sync_config.h \
 	voe_handler.c voe_handler.h
 
-EXTRA_DIST = \
-	Kbuild.in
-
-BUILT_SOURCES = \
-	Kbuild
-
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules
 

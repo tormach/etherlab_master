@@ -180,12 +180,6 @@ noinst_HEADERS = \
 	r8169-4.4-ethercat.c \
 	r8169-4.4-orig.c
 
-EXTRA_DIST = \
-	Kbuild.in
-
-BUILT_SOURCES = \
-	Kbuild
-
 modules:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules
 
