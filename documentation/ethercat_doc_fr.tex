@@ -1,4 +1,3 @@
-
 %------------------------------------------------------------------------------
 %
 %  IgH EtherCAT Master Documentation (French version)
@@ -9,10 +8,10 @@
 %
 %------------------------------------------------------------------------------
 
-\documentclass[a4paper,12pt,BCOR6mm,bibtotoc,idxtotoc]{scrbook}
+\documentclass[a4paper,12pt,BCOR=6mm,bibtotoc,idxtotoc]{scrbook}
 
-\usepackage[latin1]{inputenc}
-\usepackage[automark,headsepline]{scrpage2}
+\usepackage[utf8]{inputenc}
+\usepackage[automark,headsepline]{scrlayer-scrpage}
 \usepackage[french]{babel}
 \usepackage{graphicx}
 \usepackage{makeidx}
@@ -24,19 +23,13 @@
 \usepackage{longtable}
 \usepackage{hyperref}
 
-
 \hypersetup{pdfpagelabels,plainpages=false}
 \hypersetup{linkcolor=blue,colorlinks=true,urlcolor=blue}
 
 \setlength{\parskip}{0.8ex plus 0.8ex minus 0.5ex}
 \setlength{\parindent}{0mm}
 
-\setcounter{secnumdepth}{\subsubsectionlevel}
-
-\DeclareFontShape{OT1}{cmtt}{bx}{n}
-{
-  <5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>cmttb10
-}{}
+\setcounter{secnumdepth}{\subsubsectionnumdepth}
 
 \lstset{basicstyle=\ttfamily\small,numberstyle=\tiny,aboveskip=4mm,
   belowskip=2mm,escapechar=`,breaklines=true}
