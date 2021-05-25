@@ -54,6 +54,8 @@ SUBDIRS += \
 endif
 endif
 
+# Here DIST_SUBDIRS needs to be explicitely defined because
+# dc_rtai, mini and rtai are never added to `SUBDIRS`
 DIST_SUBDIRS = \
 	dc_rtai \
 	dc_user \

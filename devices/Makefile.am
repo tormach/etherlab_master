@@ -33,12 +33,6 @@ SUBDIRS = \
 	e1000e \
 	igb
 
-DIST_SUBDIRS = \
-	ccat \
-	e1000 \
-	e1000e \
-	igb
-
 # using HEADERS to enable tags target
 noinst_HEADERS = \
 	8139too-2.6.13-ethercat.c \
