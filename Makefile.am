@@ -74,9 +74,6 @@ modules_install:
 	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" \
 		INSTALL_MOD_DIR="$(INSTALL_MOD_DIR)" modules_install
 
-clean-local:
-	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" clean
-
 mydist:
 	git -C $(srcdir) log > ChangeLog
 	@REV=`git -C $(srcdir) describe` && \
