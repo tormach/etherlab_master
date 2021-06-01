@@ -252,6 +252,7 @@ void ec_fsm_master_state_start(
     ec_datagram_brd(fsm->datagram, 0x0130, 2);
     ec_datagram_zero(fsm->datagram);
     fsm->datagram->device_index = fsm->dev_idx;
+    fsm->retries = EC_FSM_RETRIES;
     fsm->state = ec_fsm_master_state_broadcast;
 }
 
@@ -269,6 +270,10 @@ void ec_fsm_master_state_broadcast(
     unsigned int i, size;
     ec_slave_t *slave;
     ec_master_t *master = fsm->master;
+
+    if (datagram->state == EC_DATAGRAM_TIMED_OUT && fsm->retries--) {
+        return;
+    }
 
     // bus topology change?
     if (datagram->working_counter != fsm->slaves_responding[fsm->dev_idx]) {
