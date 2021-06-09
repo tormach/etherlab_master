@@ -45,6 +45,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2 subdir-objects])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_MACRO_DIR([m4])
+AC_PROG_SED
 PKG_PROG_PKG_CONFIG
 PKG_INSTALLDIR()
 

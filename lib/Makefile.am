@@ -75,6 +75,10 @@ libethercat_la_LDFLAGS = -version-info 2:0:1
 
 pkgconfig_DATA = libethercat.pc
 
+cmakedir = $(libdir)/cmake
+
+cmake_DATA = EtherCATConfig.cmake
+
 #------------------------------------------------------------------------------
 
 if ENABLE_RTDM
@@ -98,3 +102,8 @@ endif
 endif
 
 #------------------------------------------------------------------------------
+
+# we need to replace the variables manually, because autotools does not expand them.
+
+EtherCATConfig.cmake: $(srcdir)/EtherCATConfig.cmake.in Makefile
+	$(SED) -e 's,%libdir%,$(libdir),' -e 's,%includedir%,$(includedir),' $< > $@
