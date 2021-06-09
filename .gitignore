@@ -32,6 +32,7 @@ configure
 ethercat.spec
 examples/dc_user/ec_dc_user_example
 examples/user/ec_user_example
+lib/EtherCATConfig.cmake
 lib/libethercat.la
 lib/libethercat.pc
 libtool
