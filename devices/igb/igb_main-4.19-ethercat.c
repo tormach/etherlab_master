@@ -8520,23 +8520,25 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
 			continue;
 
 		if (adapter->ecdev) {
-			total_packets++;
-			continue;
+			ecdev_receive(adapter->ecdev, skb->data, size);
+			adapter->ec_watchdog_jiffies = jiffies;
+			total_bytes += skb->len;
+			dev_kfree_skb_any(skb);
+		} else {
+			/* verify the packet layout is correct */
+			if (igb_cleanup_headers(rx_ring, rx_desc, skb)) {
+				skb = NULL;
+				continue;
+			}
+
+			/* probably a little skewed due to removing CRC */
+			total_bytes += skb->len;
+
+			/* populate checksum, timestamp, VLAN, and protocol */
+			igb_process_skb_fields(rx_ring, rx_desc, skb);
+
+			napi_gro_receive(&q_vector->napi, skb);
 		}
-
-		/* verify the packet layout is correct */
-		if (igb_cleanup_headers(rx_ring, rx_desc, skb)) {
-			skb = NULL;
-			continue;
-		}
-
-		/* probably a little skewed due to removing CRC */
-		total_bytes += skb->len;
-
-		/* populate checksum, timestamp, VLAN, and protocol */
-		igb_process_skb_fields(rx_ring, rx_desc, skb);
-
-		napi_gro_receive(&q_vector->napi, skb);
 
 		/* reset skb pointer */
 		skb = NULL;
