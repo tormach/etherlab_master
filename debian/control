@@ -1,0 +1,23 @@
+Source: etherlabmaster
+Section: misc
+Priority: extra
+Maintainer: Sascha Ittner <sascha.ittner@modusoft.de>
+Build-Depends: debhelper (>> 4.0.0), dkms, gettext, autoconf, automake, libtool, quilt
+Standards-Version: 2.1.0
+
+Package: etherlabmaster
+Replaces: ethercat, etherlabmaster
+Conflicts: ethercat, etherlabmaster
+Provides: ethercat, etherlabmaster
+Architecture: any
+Depends: ${shlibs:Depends}, dkms, procps, ifupdown
+Description: IgH EtherCAT master for Linux
+
+Package: etherlabmaster-dev
+Replaces: ethercat-dev, etherlabmaster-dev
+Conflicts: ethercat-dev, etherlabmaster-dev
+Provides: ethercat-dev, etherlabmaster-dev
+Architecture: any
+Depends: etherlabmaster
+Description: IgH EtherCAT master for Linux (development files)
+
