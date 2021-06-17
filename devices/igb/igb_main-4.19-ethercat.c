@@ -9073,7 +9073,13 @@ static int __maybe_unused igb_runtime_resume(struct device *dev)
 
 static void igb_shutdown(struct pci_dev *pdev)
 {
+	struct net_device *netdev = pci_get_drvdata(pdev);
+	struct igb_adapter *adapter = netdev_priv(netdev);
 	bool wake;
+
+	if (adapter->ecdev) {
+		ecdev_close(adapter->ecdev);
+	}
 
 	__igb_shutdown(pdev, &wake, 0);
 
