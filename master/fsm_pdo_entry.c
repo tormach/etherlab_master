@@ -224,7 +224,13 @@ void ec_fsm_pdo_entry_read_state_count(
         return;
     }
 
-    if (fsm->request.data_size != sizeof(uint8_t)) {
+    if (fsm->request.data_size == sizeof(uint8_t)) {
+      fsm->entry_count = EC_READ_U8(fsm->request.data);
+    } else if (fsm->request.data_size == sizeof(uint16_t)) {
+      fsm->entry_count = EC_READ_U16(fsm->request.data);
+    } else if (fsm->request.data_size == sizeof(uint32_t)) {
+      fsm->entry_count = EC_READ_U32(fsm->request.data);
+    } else {
         EC_SLAVE_ERR(fsm->slave, "Invalid data size %zu at uploading"
                 " SDO 0x%04X:%02X.\n",
                 fsm->request.data_size, fsm->request.index,
@@ -232,8 +238,6 @@ void ec_fsm_pdo_entry_read_state_count(
         fsm->state = ec_fsm_pdo_entry_state_error;
         return;
     }
-
-    fsm->entry_count = EC_READ_U8(fsm->request.data);
 
     EC_SLAVE_DBG(fsm->slave, 1, "%u PDO entries mapped.\n", fsm->entry_count);
 
