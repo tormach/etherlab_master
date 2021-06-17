@@ -47,7 +47,7 @@
 
 /*****************************************************************************/
 
-#ifdef EC_USE_RTMUTEX
+#if defined(CONFIG_RT_MUTEXES) && defined(EC_USE_RTMUTEX)
 
 #include <linux/rtmutex.h>
 
