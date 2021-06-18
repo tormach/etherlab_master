@@ -1,13 +1,12 @@
+image:
+    registry.gitlab.com/etherlab.org/build-container-factory/leap-15.2:linux-syms
+
 build:
     stage: build
 
-    before_script:
-        - apt update
-        - apt install -y linux-source linux-headers-4.19.0-16-all
-
     script:
         - ./bootstrap
-        - ./configure --with-linux-dir=/usr/src/linux-headers-4.19.0-16-amd64 --disable-8139too
+        - ./configure --with-linux-dir=/usr/src/linux-obj/$(uname -i)/default --disable-8139too
         - make -j8 all modules
 
 include:
