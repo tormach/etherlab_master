@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -e
 
 #------------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ parse_mac_address() {
     else
         echo "Invalid MAC address \"${1}\" in ${ETHERCAT_CONFIG}"
         exit_fail
-    fi 
+    fi
 }
 
 #------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ while true; do
     parse_mac_address ${DEVICE}
     DEVICES=${DEVICES}${MAC}
     add_interface ${IFACE}
-        
+
     parse_mac_address ${BACKUP}
     BACKUPS=${BACKUPS}${MAC}
     add_interface ${IFACE}
