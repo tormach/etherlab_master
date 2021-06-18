@@ -42,3 +42,4 @@ script/ethercatctl
 script/init.d/ethercat
 stamp-h1
 tool/ethercat
+mailbox_gateway/ethercat_mbg
