@@ -43,3 +43,11 @@ script/init.d/ethercat
 stamp-h1
 tool/ethercat
 mailbox_gateway/ethercat_mbg
+debian/autoreconf.*
+debian/*.debhelper
+debian/*.log
+debian/*.substvars
+debian/etherlabmaster-dev
+debian/etherlabmaster
+debian/files
+debian/tmp
