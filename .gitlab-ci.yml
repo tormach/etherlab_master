@@ -8,7 +8,7 @@ build:
         - ./bootstrap
         - ./configure --with-linux-dir=/usr/src/linux-obj/$(uname -i)/default --disable-8139too
         - make -j8 all modules
+        - make DISTCHECK_CONFIGURE_FLAGS="--with-linux-dir=/usr/src/linux-obj/$(uname -i)/default" distcheck
 
 include:
     - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
-        

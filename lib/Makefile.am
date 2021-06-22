@@ -79,6 +79,11 @@ cmakedir = $(libdir)/cmake
 
 cmake_DATA = EtherCATConfig.cmake
 
+EXTRA_DIST = EtherCATConfig.cmake.in
+
+CLEANFILES = $(cmake_DATA)
+
+
 #------------------------------------------------------------------------------
 
 if ENABLE_RTDM

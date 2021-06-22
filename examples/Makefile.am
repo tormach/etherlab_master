@@ -26,6 +26,7 @@
 #  industrial property and similar rights of Beckhoff Automation GmbH.
 #
 #------------------------------------------------------------------------------
+include $(top_srcdir)/Makefile.kbuild
 
 SUBDIRS =
 

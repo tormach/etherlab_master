@@ -26,6 +26,7 @@
 #  industrial property and similar rights of Beckhoff Automation GmbH.
 #
 #------------------------------------------------------------------------------
+include $(top_srcdir)/Makefile.kbuild
 
 SUBDIRS = \
 	ccat \
@@ -173,15 +174,5 @@ noinst_HEADERS = \
 	r8169-3.8-orig.c \
 	r8169-4.4-ethercat.c \
 	r8169-4.4-orig.c
-
-modules:
-	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules
-
-modules_install:
-	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" \
-		INSTALL_MOD_DIR="$(INSTALL_MOD_DIR)" modules_install
-
-clean-local:
-	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" clean
 
 #------------------------------------------------------------------------------

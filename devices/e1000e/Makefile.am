@@ -26,6 +26,7 @@
 #  industrial property and similar rights of Beckhoff Automation GmbH.
 #
 #------------------------------------------------------------------------------
+include $(top_srcdir)/Makefile.kbuild
 
 EXTRA_DIST = \
 	80003es2lan-3.10-ethercat.c \
@@ -459,15 +460,5 @@ EXTRA_DIST = \
 	regs-4.4-ethercat.h \
 	regs-4.4-orig.h \
 	update.sh
-
-modules:
-	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" modules
-
-modules_install:
-	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" \
-		INSTALL_MOD_DIR="$(INSTALL_MOD_DIR)" modules_install
-
-clean-local:
-	$(MAKE) -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" clean
 
 #------------------------------------------------------------------------------
