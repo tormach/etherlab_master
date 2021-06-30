@@ -181,6 +181,18 @@ out_return:
  */
 void __exit ec_tty_cleanup_module(void)
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 7, 0)
+    int i;
+
+    // Confirm that all kalloc'd ports have had kfree() called on them
+    for (i = 0; i < EC_TTY_MAX_DEVICES; i++) {
+        if (!tty_driver->ports[i]) continue;
+        tty_port_destroy(tty_driver->ports[i]);
+        kfree(tty_driver->ports[i]);
+        tty_driver->ports[i] = NULL;
+    }
+#endif
+
     tty_unregister_driver(tty_driver);
     put_tty_driver(tty_driver);
     printk(KERN_INFO PFX "Module unloading.\n");
@@ -240,12 +252,25 @@ int ec_tty_init(ec_tty_t *t, int minor,
         cflag = tty_driver->init_termios.c_cflag;
     }
     ret = t->ops.cflag_changed(t->cb_data, cflag);
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 7, 0)
+    tty_driver->ports[minor] = kmalloc(sizeof(**tty_driver->ports),
+            GFP_KERNEL);
+    if (!tty_driver->ports[minor]) {
+        ret = -ENOMEM;
+    }
+#endif
+
     if (ret) {
         printk(KERN_ERR PFX "ERROR: Initial cflag 0x%x not accepted.\n",
                 cflag);
         tty_unregister_device(tty_driver, t->minor);
         return ret;
     }
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 7, 0)
+    tty_port_init(tty_driver->ports[minor]);
+#endif
 
     t->timer.expires = jiffies + 10;
     add_timer(&t->timer);
@@ -772,10 +797,18 @@ ec_tty_t *ectty_create(const ec_tty_operations_t *ops, void *cb_data)
 
 void ectty_free(ec_tty_t *tty)
 {
-    printk(KERN_INFO PFX "Freeing TTY interface %i.\n", tty->minor);
+    int minor = tty->minor;
+
+    printk(KERN_INFO PFX "Freeing TTY interface %i.\n", minor);
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 7, 0)
+    tty_port_destroy(tty_driver->ports[minor]);
+    kfree(tty_driver->ports[minor]);
+    tty_driver->ports[minor] = NULL;
+#endif
 
     ec_tty_clear(tty);
-    ttys[tty->minor] = NULL;
+    ttys[minor] = NULL;
     kfree(tty);
 }
 
