@@ -6,7 +6,7 @@ build:
 
     script:
         - ./bootstrap
-        - ./configure --with-linux-dir=/usr/src/linux-obj/$(uname -i)/default --disable-8139too
+        - ./configure --with-linux-dir=/usr/src/linux-obj/$(uname -i)/default --disable-8139too --enable-tty --with-devices=2 --enable-ccat
         - make -j8 all modules
         - make DISTCHECK_CONFIGURE_FLAGS="--with-linux-dir=/usr/src/linux-obj/$(uname -i)/default" distcheck
 
