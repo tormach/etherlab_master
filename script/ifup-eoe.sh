@@ -33,7 +33,6 @@
 
 # this ifup.d script adds special network interfaces to a network bridge
 
-CFGNAME=${1}
 IFNAME=${2}
 
 # customize here
@@ -43,7 +42,7 @@ BRCTL="/sbin/brctl"
 LOGGER="logger -t ifup-eoe"
 
 # if the current interface in the list of interfaces to bridge?
-if ! echo ${INTERFACES} | grep -qw ${IFNAME}; then
+if ! echo "${INTERFACES}" | grep -qw "${IFNAME}"; then
     exit 0;
 fi
 
@@ -53,10 +52,10 @@ if ! ${BRCTL} show | grep -q "^${BRNAME}"; then
     ${BRCTL} addbr ${BRNAME} # create it
 fi
 
-${LOGGER} Adding ${IFNAME} to ${BRNAME}
-ip link set ${IFNAME} down
-ip addr flush dev ${IFNAME}
-${BRCTL} addif ${BRNAME} ${IFNAME}
-ip link set ${IFNAME} up
+${LOGGER} Adding "${IFNAME}" to ${BRNAME}
+ip link set "${IFNAME}" down
+ip addr flush dev "${IFNAME}"
+${BRCTL} addif ${BRNAME} "${IFNAME}"
+ip link set "${IFNAME}" up
 
 #------------------------------------------------------------------------------

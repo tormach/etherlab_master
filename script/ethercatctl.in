@@ -49,6 +49,7 @@ if [ ! -r ${ETHERCAT_CONFIG} ]; then
     exit 6
 fi
 
+# shellcheck source=/etc/ethercat.conf
 . ${ETHERCAT_CONFIG}
 
 #------------------------------------------------------------------------------
@@ -56,10 +57,10 @@ fi
 parse_mac_address() {
     if [ -z "${1}" ]; then
         MAC=""
-    elif echo ${1} | grep -qE '^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$'; then
+    elif echo "${1}" | grep -qE '^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$'; then
         MAC=${1}
     else
-        echo Invalid MAC address \"${1}\" in ${ETHERCAT_CONFIG}
+        echo Invalid MAC address \""${1}"\" in ${ETHERCAT_CONFIG}
         exit 1
     fi
 }
@@ -84,18 +85,18 @@ start)
             BACKUPS=${BACKUPS},
         fi
 
-        parse_mac_address ${DEVICE}
+        parse_mac_address "${DEVICE}"
         DEVICES=${DEVICES}${MAC}
 
-        parse_mac_address ${BACKUP}
+        parse_mac_address "${BACKUP}"
         BACKUPS=${BACKUPS}${MAC}
 
-        MASTER_INDEX=$(expr ${MASTER_INDEX} + 1)
+        MASTER_INDEX=$(( "${MASTER_INDEX}" + 1))
     done
 
     # load master module
-    if ! ${MODPROBE} ${MODPROBE_FLAGS} ec_master \
-            main_devices=${DEVICES} backup_devices=${BACKUPS}; then
+    if ! ${MODPROBE} "${MODPROBE_FLAGS}" ec_master \
+            main_devices="${DEVICES}" backup_devices="${BACKUPS}"; then
         exit 1
     fi
 
@@ -104,25 +105,25 @@ start)
     # check for modules to replace
     for MODULE in ${DEVICE_MODULES}; do
         ECMODULE=ec_${MODULE}
-        if ! ${MODINFO} ${ECMODULE} > /dev/null; then
+        if ! ${MODINFO} "${ECMODULE}" > /dev/null; then
             continue # ec_* module not found
         fi
 
-        if [ ${MODULE} != "generic" -a ${MODULE} != "ccat" ]; then
+        if [ "${MODULE}" != "generic" ] && [ "${MODULE}" != "ccat" ]; then
             # try to unload standard module
             if ${LSMOD} | grep "^${MODULE} " > /dev/null; then
-                if ! ${RMMOD} ${MODULE}; then
+                if ! ${RMMOD} "${MODULE}"; then
                     ${RMMOD} ${LOADED_MODULES}
                     exit 1
                 fi
             fi
         fi
 
-        if ! ${MODPROBE} ${MODPROBE_FLAGS} ${ECMODULE}; then
-            if [ ${MODULE} != "generic" -a ${MODULE} != "ccat" ]; then
-                ${MODPROBE} ${MODPROBE_FLAGS} ${MODULE} # try to restore
+        if ! ${MODPROBE} "${MODPROBE_FLAGS}" "${ECMODULE}"; then
+            if [ "${MODULE}" != "generic" ] && [ "${MODULE}" != "ccat" ]; then
+                ${MODPROBE} "${MODPROBE_FLAGS}" "${MODULE}" # try to restore
             fi
-            ${RMMOD} ${LOADED_MODULES}
+            ${RMMOD} "${LOADED_MODULES}"
             exit 1
         fi
 
@@ -141,7 +142,7 @@ stop)
         if ! ${LSMOD} | grep -q "^${ECMODULE} "; then
             continue # ec_* module not loaded
         fi
-        if ! ${RMMOD} ${ECMODULE}; then
+        if ! ${RMMOD} "${ECMODULE}"; then
             exit 1
         fi;
     done
@@ -150,10 +151,10 @@ stop)
 
     # load standard modules again
     for MODULE in ${DEVICE_MODULES}; do
-        if [ ${MODULE} == "generic" -o ${MODULE} == "ccat" ]; then
+        if [ "${MODULE}" == "generic" ] || [ "${MODULE}" == "ccat" ]; then
             continue
         fi
-        ${MODPROBE} ${MODPROBE_FLAGS} ${MODULE}
+        ${MODPROBE} "${MODPROBE_FLAGS}" "${MODULE}"
     done
 
     exit 0
@@ -177,16 +178,16 @@ status)
     while true; do
         DEVICE=$(eval echo "\${MASTER${MASTER_COUNT}_DEVICE}")
         if [ -z "${DEVICE}" ]; then break; fi
-        MASTER_COUNT=$(expr ${MASTER_COUNT} + 1)
+        MASTER_COUNT=$(( "${MASTER_COUNT}" + 1))
     done
 
     RESULT=0
 
-    for i in `seq 0 $(expr ${MASTER_COUNT} - 1)`; do
+    for i in $(seq 0 "$(( "${MASTER_COUNT}" - 1))"); do
         echo -n "Master${i} "
 
         # Check if the master is in idle or operation phase
-        ${ETHERCAT} master --master ${i} 2>/dev/null | \
+        ${ETHERCAT} master --master "${i}" 2>/dev/null | \
             grep -qE 'Phase:[[:space:]]*Idle|Phase:[[:space:]]*Operation'
         EXITCODE=$?
 
