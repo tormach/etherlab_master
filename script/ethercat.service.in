@@ -22,8 +22,8 @@ Description=EtherCAT Master Kernel Modules
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=@prefix@/sbin/ethercatctl start
-ExecStop=@prefix@/sbin/ethercatctl stop
+ExecStart=@sbindir@/ethercatctl start
+ExecStop=@sbindir@/ethercatctl stop
 
 [Install]
 WantedBy=multi-user.target

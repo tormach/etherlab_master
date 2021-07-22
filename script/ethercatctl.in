@@ -38,11 +38,11 @@ MODPROBE=/sbin/modprobe
 RMMOD=/sbin/rmmod
 MODINFO=/sbin/modinfo
 
-ETHERCAT=@prefix@/bin/ethercat
+ETHERCAT=@bindir@/ethercat
 
 #------------------------------------------------------------------------------
 
-ETHERCAT_CONFIG=/etc/ethercat.conf
+ETHERCAT_CONFIG=@sysconfdir@/ethercat.conf
 
 if [ ! -r ${ETHERCAT_CONFIG} ]; then
     echo ${ETHERCAT_CONFIG} not existing;
