@@ -95,7 +95,7 @@ start)
     done
 
     # load master module
-    if ! ${MODPROBE} "${MODPROBE_FLAGS}" ec_master \
+    if ! ${MODPROBE} ${MODPROBE_FLAGS} ec_master \
             main_devices="${DEVICES}" backup_devices="${BACKUPS}"; then
         exit 1
     fi
@@ -119,11 +119,11 @@ start)
             fi
         fi
 
-        if ! ${MODPROBE} "${MODPROBE_FLAGS}" "${ECMODULE}"; then
+        if ! ${MODPROBE} ${MODPROBE_FLAGS} "${ECMODULE}"; then
             if [ "${MODULE}" != "generic" ] && [ "${MODULE}" != "ccat" ]; then
-                ${MODPROBE} "${MODPROBE_FLAGS}" "${MODULE}" # try to restore
+                ${MODPROBE} ${MODPROBE_FLAGS} "${MODULE}" # try to restore
             fi
-            ${RMMOD} "${LOADED_MODULES}"
+            ${RMMOD} ${LOADED_MODULES}
             exit 1
         fi
 
@@ -154,7 +154,7 @@ stop)
         if [ "${MODULE}" == "generic" ] || [ "${MODULE}" == "ccat" ]; then
             continue
         fi
-        ${MODPROBE} "${MODPROBE_FLAGS}" "${MODULE}"
+        ${MODPROBE} ${MODPROBE_FLAGS} "${MODULE}"
     done
 
     exit 0

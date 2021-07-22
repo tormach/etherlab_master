@@ -166,7 +166,7 @@ start)
     done
 
     # load master module
-    if ! ${MODPROBE} "${MODPROBE_FLAGS}" ec_master "${MASTER_ARGS}" \
+    if ! ${MODPROBE} ${MODPROBE_FLAGS} ec_master "${MASTER_ARGS}" \
             main_devices="${DEVICES}" backup_devices="${BACKUPS}"; then
         exit_fail
     fi
@@ -184,9 +184,9 @@ start)
                 fi
             fi
         fi
-        if ! ${MODPROBE} "${MODPROBE_FLAGS}" "${ECMODULE}"; then
+        if ! ${MODPROBE} ${MODPROBE_FLAGS} "${ECMODULE}"; then
             if [ "${MODULE}" != "generic" ]; then
-                ${MODPROBE} "${MODPROBE_FLAGS}" "${MODULE}" # try to restore
+                ${MODPROBE} ${MODPROBE_FLAGS} "${MODULE}" # try to restore
             fi
             exit_fail
         fi
@@ -214,7 +214,7 @@ stop)
     # reload previous modules
     for MODULE in ${DEVICE_MODULES}; do
         if [ "${MODULE}" != "generic" ]; then
-            if ! ${MODPROBE} "${MODPROBE_FLAGS}" "${MODULE}"; then
+            if ! ${MODPROBE} ${MODPROBE_FLAGS} "${MODULE}"; then
                 echo Warning: Failed to restore "${MODULE}".
             fi
         fi
