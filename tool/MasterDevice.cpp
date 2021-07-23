@@ -218,6 +218,24 @@ void MasterDevice::getConfigIdn(
 
 /****************************************************************************/
 
+void MasterDevice::getConfigFlag(
+        ec_ioctl_config_flag_t *data,
+        unsigned int index,
+        unsigned int pos
+        )
+{
+    data->config_index = index;
+    data->flag_pos = pos;
+
+    if (ioctl(fd, EC_IOCTL_CONFIG_FLAG, data) < 0) {
+        stringstream err;
+        err << "Failed to get slave config flag: " << strerror(errno);
+        throw MasterDeviceException(err);
+    }
+}
+
+/****************************************************************************/
+
 void MasterDevice::getDomain(ec_ioctl_domain_t *data, unsigned int index)
 {
     data->index = index;

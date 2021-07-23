@@ -44,6 +44,7 @@
 #include "sync_config.h"
 #include "fmmu_config.h"
 #include "coe_emerg_ring.h"
+#include "flag.h"
 
 /*****************************************************************************/
 
@@ -147,6 +148,7 @@ struct ec_slave_config {
     struct list_head voe_handlers; /**< List of VoE handlers. */
     struct list_head reg_requests; /**< List of register requests. */
     struct list_head soe_configs; /**< List of SoE configurations. */
+    struct list_head flags; /**< List of feature flags. */
 
     ec_coe_emerg_ring_t emerg_ring; /**< CoE emergency ring buffer. */
 };
@@ -167,6 +169,9 @@ const ec_sdo_request_t *ec_slave_config_get_sdo_by_pos_const(
         const ec_slave_config_t *, unsigned int);
 unsigned int ec_slave_config_idn_count(const ec_slave_config_t *);
 const ec_soe_request_t *ec_slave_config_get_idn_by_pos_const(
+        const ec_slave_config_t *, unsigned int);
+unsigned int ec_slave_config_flag_count(const ec_slave_config_t *);
+const ec_flag_t *ec_slave_config_get_flag_by_pos_const(
         const ec_slave_config_t *, unsigned int);
 ec_sdo_request_t *ec_slave_config_find_sdo_request(ec_slave_config_t *,
         unsigned int);

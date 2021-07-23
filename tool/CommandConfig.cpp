@@ -154,6 +154,7 @@ void CommandConfig::showDetailedConfigs(
     ec_ioctl_config_pdo_entry_t entry;
     ec_ioctl_config_sdo_t sdo;
     ec_ioctl_config_idn_t idn;
+    ec_ioctl_config_flag_t flag;
     string indent(doIndent ? "  " : "");
 
     for (configIter = configList.begin();
@@ -293,6 +294,19 @@ void CommandConfig::showDetailedConfigs(
         } else {
             cout << indent << "  None." << endl;
         }
+
+        cout << indent << "Feature flags:" << endl;
+        if (configIter->flag_count) {
+            for (j = 0; j < configIter->flag_count; j++) {
+                m.getConfigFlag(&flag, configIter->config_index, j);
+
+                cout << indent << "  " << flag.key
+                    << ": " << flag.value << endl;
+            }
+        } else {
+            cout << indent << "  None." << endl;
+        }
+
         if (configIter->dc_assign_activate) {
             int i;
 

@@ -1232,6 +1232,7 @@ static ATTRIBUTES int ec_ioctl_config(
     data.watchdog_intervals = sc->watchdog_intervals;
     data.sdo_count = ec_slave_config_sdo_count(sc);
     data.idn_count = ec_slave_config_idn_count(sc);
+    data.flag_count = ec_slave_config_flag_count(sc);
     data.slave_position = sc->slave ? sc->slave->ring_position : -1;
     data.dc_assign_activate = sc->dc_assign_activate;
     for (i = 0; i < EC_SYNC_SIGNAL_COUNT; i++) {
@@ -1483,6 +1484,69 @@ static ATTRIBUTES int ec_ioctl_config_idn(
     ioctl->size = req->data_size;
     memcpy(ioctl->data, req->data,
             min((u32) ioctl->size, (u32) EC_MAX_IDN_DATA_SIZE));
+
+    up(&master->master_sem);
+
+    if (copy_to_user((void __user *) arg, ioctl, sizeof(*ioctl))) {
+        kfree(ioctl);
+        return -EFAULT;
+    }
+
+    kfree(ioctl);
+    return 0;
+}
+
+/*****************************************************************************/
+
+/** Get slave configuration feature flag information.
+ *
+ * \return Zero on success, otherwise a negative error code.
+ */
+static ATTRIBUTES int ec_ioctl_config_flag(
+        ec_master_t *master, /**< EtherCAT master. */
+        void *arg /**< ioctl() argument. */
+        )
+{
+    ec_ioctl_config_flag_t *ioctl;
+    const ec_slave_config_t *sc;
+    const ec_flag_t *flag;
+    size_t size;
+
+    if (!(ioctl = kmalloc(sizeof(*ioctl), GFP_KERNEL))) {
+        return -ENOMEM;
+    }
+
+    if (copy_from_user(ioctl, (void __user *) arg, sizeof(*ioctl))) {
+        kfree(ioctl);
+        return -EFAULT;
+    }
+
+    if (down_interruptible(&master->master_sem)) {
+        kfree(ioctl);
+        return -EINTR;
+    }
+
+    if (!(sc = ec_master_get_config_const(
+                    master, ioctl->config_index))) {
+        up(&master->master_sem);
+        EC_MASTER_ERR(master, "Slave config %u does not exist!\n",
+                ioctl->config_index);
+        kfree(ioctl);
+        return -EINVAL;
+    }
+
+    if (!(flag = ec_slave_config_get_flag_by_pos_const(
+                    sc, ioctl->flag_pos))) {
+        up(&master->master_sem);
+        EC_MASTER_ERR(master, "Invalid flag position!\n");
+        kfree(ioctl);
+        return -EINVAL;
+    }
+
+    size = min((u32) strlen(flag->key), (u32) EC_MAX_FLAG_KEY_SIZE - 1);
+    memcpy(ioctl->key, flag->key, size);
+    ioctl->key[size] = 0x00;
+    ioctl->value = flag->value;
 
     up(&master->master_sem);
 
@@ -3071,6 +3135,62 @@ static ATTRIBUTES int ec_ioctl_sc_idn(
 
 /*****************************************************************************/
 
+/** Configures a feature flag.
+ *
+ * \return Zero on success, otherwise a negative error code.
+ */
+static ATTRIBUTES int ec_ioctl_sc_flag(
+        ec_master_t *master, /**< EtherCAT master. */
+        void *arg, /**< ioctl() argument. */
+        ec_ioctl_context_t *ctx /**< Private data structure of file handle. */
+        )
+{
+    ec_ioctl_sc_flag_t ioctl;
+    ec_slave_config_t *sc;
+    uint8_t *key;
+    int ret;
+
+    if (unlikely(!ctx->requested)) {
+        return -EPERM;
+    }
+
+    if (copy_from_user(&ioctl, (void __user *) arg, sizeof(ioctl))) {
+        return -EFAULT;
+    }
+
+    if (!ioctl.key_size) {
+        return -EINVAL;
+    }
+
+    if (!(key = kmalloc(ioctl.key_size + 1, GFP_KERNEL))) {
+        return -ENOMEM;
+    }
+
+    if (copy_from_user(key, (void __user *) ioctl.key, ioctl.key_size)) {
+        kfree(key);
+        return -EFAULT;
+    }
+
+    if (down_interruptible(&master->master_sem)) {
+        kfree(key);
+        return -EINTR;
+    }
+
+    if (!(sc = ec_master_get_config(master, ioctl.config_index))) {
+        up(&master->master_sem);
+        kfree(key);
+        return -ENOENT;
+    }
+
+    up(&master->master_sem); /** \todo sc could be invalidated */
+
+    ret = ecrt_slave_config_flag(sc, key, ioctl.value);
+    kfree(key);
+    return ret;
+}
+
+/*****************************************************************************/
+
 /** Gets the domain's data size.
  *
  * \return Domain size, or a negative error code.
@@ -4392,6 +4512,9 @@ long EC_IOCTL(
         case EC_IOCTL_CONFIG_IDN:
             ret = ec_ioctl_config_idn(master, arg);
             break;
+        case EC_IOCTL_CONFIG_FLAG:
+            ret = ec_ioctl_config_flag(master, arg);
+            break;
 #ifdef EC_EOE
         case EC_IOCTL_EOE_HANDLER:
             ret = ec_ioctl_eoe_handler(master, arg);
@@ -4646,6 +4769,13 @@ long EC_IOCTL(
                 break;
             }
             ret = ec_ioctl_sc_idn(master, arg, ctx);
+            break;
+        case EC_IOCTL_SC_FLAG:
+            if (!ctx->writable) {
+                ret = -EPERM;
+                break;
+            }
+            ret = ec_ioctl_sc_flag(master, arg, ctx);
             break;
         case EC_IOCTL_DOMAIN_SIZE:
             ret = ec_ioctl_domain_size(master, arg, ctx);

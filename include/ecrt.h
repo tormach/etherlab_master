@@ -39,6 +39,11 @@
  * request a master, to map process data, to communicate with slaves via CoE
  * and to configure and activate the bus.
  *
+ * Changes since version 1.5.2:
+ *
+ * - Added the ecrt_slave_config_flag() method and the EC_HAVE_FLAGS
+ *   definition to check for its existence.
+ *
  * Changes in version 1.5.2:
  *
  * - Added redundancy_active flag to ec_domain_state_t.
@@ -190,6 +195,10 @@
 /** Defined if the method ecrt_master_sync_reference_clock_to() is available.
  */
 #define EC_HAVE_SYNC_TO
+
+/** Defined if the method ecrt_slave_config_flag() is available.
+ */
+#define EC_HAVE_FLAGS
 
 /*****************************************************************************/
 
@@ -1645,6 +1654,31 @@ int ecrt_slave_config_idn(
                                SAFEOP). */
         const uint8_t *data, /**< Pointer to the data. */
         size_t size /**< Size of the \a data. */
+        );
+
+/** Adds a feature flag to a slave configuration.
+ *
+ * Feature flags are a generic way to configure slave-specific behavior.
+ *
+ * Multiple calls with the same slave configuration and key will overwrite the
+ * configuration.
+ *
+ * The following flags may be available:
+ * - AssignToPdi: Zero (default) keeps the slave information interface (SII)
+ *   assigned to EtherCAT (except during transition to PREOP). Non-zero
+ *   assigns the SII to the slave controller side before going to PREOP and
+ *   leaves it there until a write command happens.
+ *
+ * This method has to be called in non-realtime context before
+ * ecrt_master_activate().
+ *
+ * \retval  0 Success.
+ * \retval <0 Error code.
+ */
+int ecrt_slave_config_flag(
+        ec_slave_config_t *sc, /**< Slave configuration. */
+        const char *key, /**< Key as null-terminated ascii string. */
+        int32_t value /**< Value to store. */
         );
 
 /******************************************************************************

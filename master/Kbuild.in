@@ -41,6 +41,7 @@ ec_master-objs := \
 	device.o \
 	domain.o \
 	eoe_request.o \
+	flag.o \
 	fmmu_config.o \
 	foe_request.o \
 	fsm_change.o \

@@ -134,6 +134,8 @@ class MasterDevice
                 uint8_t, uint16_t, uint8_t);
         void getConfigSdo(ec_ioctl_config_sdo_t *, unsigned int, unsigned int);
         void getConfigIdn(ec_ioctl_config_idn_t *, unsigned int, unsigned int);
+        void getConfigFlag(ec_ioctl_config_flag_t *, unsigned int,
+                unsigned int);
         void getDomain(ec_ioctl_domain_t *, unsigned int);
         void getFmmu(ec_ioctl_domain_fmmu_t *, unsigned int, unsigned int);
         void getData(ec_ioctl_domain_data_t *, unsigned int, unsigned int,

@@ -797,3 +797,37 @@ int ecrt_slave_config_idn(ec_slave_config_t *sc, uint8_t drive_no,
 }
 
 /*****************************************************************************/
+
+int ecrt_slave_config_flag(ec_slave_config_t *sc, const char *key,
+        int32_t value)
+{
+    ec_ioctl_sc_flag_t io;
+    int ret;
+
+    io.config_index = sc->index;
+    io.key_size = strlen(key);
+    if (io.key_size <= 0) {
+        return -EINVAL;
+    }
+
+    io.key = malloc(io.key_size + 1);
+    if (!io.key) {
+        fprintf(stderr, "Failed to allocate %zu bytes of flag key memory.\n",
+                io.key_size);
+        return -ENOMEM;
+    }
+
+    strcpy(io.key, key);
+    io.value = value;
+
+    ret = ioctl(sc->master->fd, EC_IOCTL_SC_FLAG, &io);
+    if (EC_IOCTL_IS_ERROR(ret)) {
+        fprintf(stderr, "Failed to configure feature flag: %s\n",
+                strerror(EC_IOCTL_ERRNO(ret)));
+        return -EC_IOCTL_ERRNO(ret);
+    }
+
+    return 0;
+}
+
+/*****************************************************************************/
