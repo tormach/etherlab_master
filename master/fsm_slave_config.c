@@ -703,6 +703,11 @@ void ec_fsm_slave_config_state_boot_preop(
         )
 {
     ec_slave_t *slave = fsm->slave;
+#ifdef EC_SII_ASSIGN
+    int assign_to_pdi;
+    ec_slave_config_t *config;
+    ec_flag_t *flag;
+#endif
 
     if (ec_fsm_change_exec(fsm->fsm_change)) {
         return;
@@ -722,12 +727,33 @@ void ec_fsm_slave_config_state_boot_preop(
             slave->requested_state != EC_SLAVE_STATE_BOOT ? "PREOP" : "BOOT");
 
 #ifdef EC_SII_ASSIGN
-    EC_SLAVE_DBG(slave, 1, "Assigning SII access back to EtherCAT.\n");
+    assign_to_pdi = 0;
+    config = fsm->slave->config;
+    if (config) {
+        flag = ec_slave_config_find_flag(config, "AssignToPdi");
+        if (flag) {
+            assign_to_pdi = flag->value;
+        }
+    }
 
-    ec_datagram_fpwr(fsm->datagram, slave->station_address, 0x0500, 0x01);
-    EC_WRITE_U8(fsm->datagram->data, 0x00); // EtherCAT
-    fsm->retries = EC_FSM_RETRIES;
-    fsm->state = ec_fsm_slave_config_state_assign_ethercat;
+    if (assign_to_pdi) {
+        EC_SLAVE_DBG(slave, 1, "Skipping SII assignment back to EtherCAT.\n");
+        if (slave->current_state == slave->requested_state) {
+            fsm->state = ec_fsm_slave_config_state_end; // successful
+            EC_SLAVE_DBG(slave, 1, "Finished configuration.\n");
+            return;
+        }
+
+        ec_fsm_slave_config_enter_sdo_conf(fsm);
+    }
+    else {
+        EC_SLAVE_DBG(slave, 1, "Assigning SII access back to EtherCAT.\n");
+
+        ec_datagram_fpwr(fsm->datagram, slave->station_address, 0x0500, 0x01);
+        EC_WRITE_U8(fsm->datagram->data, 0x00); // EtherCAT
+        fsm->retries = EC_FSM_RETRIES;
+        fsm->state = ec_fsm_slave_config_state_assign_ethercat;
+    }
 #else
     if (slave->current_state == slave->requested_state) {
         fsm->state = ec_fsm_slave_config_state_end; // successful
