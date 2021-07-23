@@ -69,6 +69,9 @@
  */
 #define FORCE_OUTPUT_CORRUPTED 0
 
+/** SDO injection timeout in microseconds. */
+#define EC_SDO_INJECTION_TIMEOUT 10000
+
 #ifdef EC_HAVE_CYCLES
 
 /** Frame timeout in cycles.
