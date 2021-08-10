@@ -1325,6 +1325,7 @@ EXPORT_SYMBOL(ecrt_slave_config_pdo_mapping_add);
 EXPORT_SYMBOL(ecrt_slave_config_pdo_mapping_clear);
 EXPORT_SYMBOL(ecrt_slave_config_pdos);
 EXPORT_SYMBOL(ecrt_slave_config_reg_pdo_entry);
+EXPORT_SYMBOL(ecrt_slave_config_reg_pdo_entry_pos);
 EXPORT_SYMBOL(ecrt_slave_config_dc);
 EXPORT_SYMBOL(ecrt_slave_config_sdo);
 EXPORT_SYMBOL(ecrt_slave_config_sdo8);
