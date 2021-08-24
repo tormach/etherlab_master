@@ -60,11 +60,14 @@ parse_mac_address() {
     elif echo ${1} | grep -qE '^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$'; then
         MAC=${1}
     else
-        DEVICENAMETOMAC=$("${IP}" address show dev "${1}" | awk '/link\/ether/ { print $2; }')
-        if echo "${DEVICENAMETOMAC}" | grep -qE '^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$'; then
+        DEVICENAMETOMAC=$("${IP}" address show dev "${1}" |
+            awk '/link\/ether/ { print $2; }')
+        if echo "${DEVICENAMETOMAC}" |
+            grep -qE '^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$'; then
             MAC=${DEVICENAMETOMAC}
         else
-            echo Invalid MAC address \""${1}"\" in ${ETHERCAT_CONFIG}
+            echo Invalid MAC address or interface name \""${1}"\" \
+                in ${ETHERCAT_CONFIG}
             exit 1
         fi
     fi
