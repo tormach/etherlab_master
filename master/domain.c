@@ -561,8 +561,10 @@ void ecrt_domain_process(ec_domain_t *domain)
 #if EC_MAX_NUM_DEVICES > 1
         if (ec_master_num_devices(domain->master) > 1) {
             ec_datagram_t *main_datagram = &pair->datagrams[EC_DEVICE_MAIN];
+#if DEBUG_REDUNDANCY
             uint32_t logical_datagram_address =
                 EC_READ_U32(main_datagram->address);
+#endif
             size_t datagram_size = main_datagram->data_size;
 
 #if DEBUG_REDUNDANCY
