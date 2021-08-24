@@ -13,15 +13,14 @@ modules_install:
 	$(KBUILD) modules_install
 
 
-# Call Kbuild clean *before* automake `clean` (see #5 for the rationale)
-# by adding `kbuild-clean` to the clean prerequisites. Having targets
-# with the same name will result in merging the prerequisites, i.e.:
-# ```
-# # Equivalent to 'clean: prerequisite1 prerequisite2'
-# clean: prerequisite1
-# clean: prerequisite2
-# ```
+# Override default `clean` target to call Kbuild clean *before* automake
+# `clean` (see #5 for the rationale).
 clean: kbuild-clean
+	@if test -z "$(SUBDIRS)"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) clean-am ; \
+	else \
+	  $(MAKE) $(AM_MAKEFLAGS) clean-recursive ; \
+	fi
 
 kbuild-clean:
 	$(KBUILD) clean
