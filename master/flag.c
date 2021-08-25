@@ -47,7 +47,7 @@ int ec_flag_init(
         return -ENOMEM;
     }
 
-    strncpy(flag->key, key, strlen(key));
+    strcpy(flag->key, key);
     flag->value = value;
     return 0;
 }
