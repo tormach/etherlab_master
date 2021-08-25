@@ -6059,6 +6059,7 @@ static int igb_tx_map(struct igb_ring *tx_ring,
 	u32 tx_flags = first->tx_flags;
 	u32 cmd_type = igb_tx_cmd_type(skb, tx_flags);
 	u16 i = tx_ring->next_to_use;
+	struct igb_adapter *adapter = netdev_priv(tx_ring->netdev);
 
 	tx_desc = IGB_TX_DESC(tx_ring, i);
 
@@ -6186,7 +6187,6 @@ dma_error:
 				 DMA_TO_DEVICE);
 	dma_unmap_len_set(tx_buffer, len, 0);
 
-	struct igb_adapter *adapter = netdev_priv(tx_ring->netdev);
 	if (!adapter->ecdev) {
 		dev_kfree_skb_any(tx_buffer->skb);
 		tx_buffer->skb = NULL;
