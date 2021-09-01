@@ -68,7 +68,7 @@ class DataTypeHandler
 
         static void outputData(std::ostream &, const DataType *,
                 void *, size_t);
-        static void printRawData(ostream &, const uint8_t *, size_t);
+        static void printRawData(std::ostream &, const uint8_t *, size_t);
 
     private:
         static const DataType dataTypes[];
