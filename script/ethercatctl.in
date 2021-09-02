@@ -99,7 +99,7 @@ start)
         parse_mac_address "${BACKUP}"
         BACKUPS=${BACKUPS}${MAC}
 
-        MASTER_INDEX=$(( "${MASTER_INDEX}" + 1))
+        MASTER_INDEX=$((${MASTER_INDEX} + 1))
     done
 
     # load master module
@@ -186,12 +186,12 @@ status)
     while true; do
         DEVICE=$(eval echo "\${MASTER${MASTER_COUNT}_DEVICE}")
         if [ -z "${DEVICE}" ]; then break; fi
-        MASTER_COUNT=$(( "${MASTER_COUNT}" + 1))
+        MASTER_COUNT=$((${MASTER_COUNT} + 1))
     done
 
     RESULT=0
 
-    for i in $(seq 0 "$(( "${MASTER_COUNT}" - 1))"); do
+    for i in $(seq 0 "$((${MASTER_COUNT} - 1))"); do
         echo -n "Master${i} "
 
         # Check if the master is in idle or operation phase
