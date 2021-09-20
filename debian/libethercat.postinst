@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+getent group ethercat >/dev/null || groupadd -r ethercat
+exit 0

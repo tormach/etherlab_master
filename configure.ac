@@ -135,6 +135,10 @@ elif test -r ${sourcedir}/include/linux/version.h; then
     kernelrelease=`grep UTS_RELEASE $hdr | cut -d " " -f 3- | tr -d \"`
 fi
 
+if [[ "$kernelrelease" == "" ]]; then
+    kernelrelease=`make -C ${sourcedir} kernelversion`
+fi
+
 if test -z "$kernelrelease"; then
     echo
     AC_MSG_ERROR([Failed to extract Linux kernel version!])

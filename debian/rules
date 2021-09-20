@@ -2,10 +2,23 @@
 
 VERSION ?= $(shell dpkg-parsechangelog | sed -rne 's/^Version: ([0-9.]+(\+[0-9]*hg[0-9a-z]*)?).*$$/\1/p')
 
+include /usr/share/dpkg/architecture.mk
+HEADERS = $(shell /bin/ls -d \
+	/usr/src/linux-headers-*-generic \
+	/usr/src/linux-headers-*-$(DEB_BUILD_ARCH) 2>/dev/null \
+	| head -1)
+ifneq (,$(HEADERS))
+CONFFLAGS += --with-linux-dir=$(HEADERS)
+endif
+
 CONFFLAGS += --disable-eoe --enable-sii-assign
 
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-	CONFFLAGS += --enable-kernel --enable-generic --enable-ccat --disable-8139too --disable-e100 --disable-e1000 --enable-e1000e --enable-igb --enable-r8169 --enable-hrtimer --enable-rtmutex
+	CONFFLAGS += --enable-kernel --enable-generic \
+		--enable-ccat --disable-igb --disable-8139too \
+		--disable-e100 --disable-e1000 --disable-e1000e \
+		--enable-hrtimer --enable-rtmutex \
+		--with-systemdsystemunitdir=systemd
 endif
 
 default:
@@ -26,17 +39,24 @@ override_dh_auto_configure:
 	dh_auto_configure -- \
 		$(CONFFLAGS)
 
-override_dh_install:
-	dh_install --list-missing
+override_dh_missing:
+	dh_missing --fail-missing
 
-	dh_install -petherlabmaster config.h globals.h Kbuild usr/src/etherlabmaster-$(VERSION)
-	dh_install -petherlabmaster -X.o -X.ko -XMakefile -X.in -X.am examples/ include/ master/ tty/ usr/src/etherlabmaster-$(VERSION)
-	dh_install -petherlabmaster debian/dkms/* usr/src/etherlabmaster-$(VERSION)
-	dh_install -petherlabmaster devices/Kbuild devices/ecdev.h devices/generic.c usr/src/etherlabmaster-$(VERSION)/devices
-	dh_install -petherlabmaster devices/r8169* usr/src/etherlabmaster-$(VERSION)/devices
-	dh_install -petherlabmaster -X.o -X.ko -XMakefile -X.in -X.am devices/ccat/ usr/src/etherlabmaster-$(VERSION)/devices
-	dh_install -petherlabmaster -X.o -X.ko -XMakefile -X.in -X.am devices/e1000e/ usr/src/etherlabmaster-$(VERSION)/devices
-	dh_install -petherlabmaster -X.o -X.ko -XMakefile -X.in -X.am devices/igb/ usr/src/etherlabmaster-$(VERSION)/devices
+override_dh_installsystemd:
+	mv debian/tmpsystemd/ethercat.service debian/etherlabmaster-dkms.ethercat.service
+	dh_installsystemd --name=ethercat
+
+override_dh_install:
+#	Clean up and check for omissions
+	rm -f	debian/tmp/etc/ethercat.conf \
+		debian/tmp/etc/init.d/ethercat
+
+	dh_install --
+
+	dh_install -petherlabmaster-dkms config.h globals.h Kbuild usr/src/etherlabmaster-$(VERSION)
+	dh_install -petherlabmaster-dkms -X.o -X.ko -XMakefile -X.in -X.am \
+	    examples/ include/ master/ tty/ devices/ usr/src/etherlabmaster-$(VERSION)
+	dh_install -petherlabmaster-dkms debian/dkms/* usr/src/etherlabmaster-$(VERSION)
 
 override_dh_dkms:
 	dh_dkms -V $(VERSION)

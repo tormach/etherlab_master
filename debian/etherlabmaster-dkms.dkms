@@ -13,30 +13,29 @@ AUTOINSTALL=yes
 MAKE[0]="make -C \${kernel_source_dir} M=$dkms_tree/$PACKAGE_NAME/$PACKAGE_VERSION/build modules"
 CLEAN="make -C \${kernel_source_dir} M=$dkms_tree/$PACKAGE_NAME/$PACKAGE_VERSION/build clean"
 
-BUILT_MODULE_NAME[1]="devices/ccat/ec_ccat"
-DEST_MODULE_NAME[1]="ec_ccat"
+BUILT_MODULE_NAME[1]="devices/ec_generic"
+DEST_MODULE_NAME[1]="ec_generic"
 DEST_MODULE_LOCATION[1]="/updates/dkms"
 
-BUILT_MODULE_NAME[2]="devices/e1000e/ec_e1000e"
-DEST_MODULE_NAME[2]="ec_e1000e"
+BUILT_MODULE_NAME[2]="devices/ccat/ec_ccat"
+DEST_MODULE_NAME[2]="ec_ccat"
 DEST_MODULE_LOCATION[2]="/updates/dkms"
 
-BUILT_MODULE_NAME[3]="devices/igb/ec_igb"
-DEST_MODULE_NAME[3]="ec_igb"
+BUILT_MODULE_NAME[3]="examples/mini/ec_mini"
+DEST_MODULE_NAME[3]="ec_mini"
 DEST_MODULE_LOCATION[3]="/updates/dkms"
 
-BUILT_MODULE_NAME[4]="devices/ec_r8169"
-DEST_MODULE_NAME[4]="ec_r8169"
-DEST_MODULE_LOCATION[4]="/updates/dkms"
-
-BUILT_MODULE_NAME[5]="devices/ec_generic"
-DEST_MODULE_NAME[5]="ec_generic"
-DEST_MODULE_LOCATION[5]="/updates/dkms"
-
-BUILT_MODULE_NAME[6]="examples/mini/ec_mini"
-DEST_MODULE_NAME[6]="ec_mini"
-DEST_MODULE_LOCATION[6]="/updates/dkms"
+# BUILT_MODULE_NAME[3]="devices/e1000e/ec_e1000e"
+# DEST_MODULE_NAME[3]="ec_e1000e"
+# DEST_MODULE_LOCATION[4]="/updates/dkms"
+# 
+# BUILT_MODULE_NAME[4]="devices/igb/ec_igb"
+# DEST_MODULE_NAME[4]="ec_igb"
+# DEST_MODULE_LOCATION[4]="/updates/dkms"
+# 
+# BUILT_MODULE_NAME[5]="devices/ec_r8169"
+# DEST_MODULE_NAME[5]="ec_r8169"
+# DEST_MODULE_LOCATION[5]="/updates/dkms"
 
 POST_BUILD="postbld \${kernel_source_dir} $dkms_tree/$PACKAGE_NAME/$PACKAGE_VERSION/build"
 POST_REMOVE="postrm \${kernel_source_dir} $dkms_tree/$PACKAGE_NAME/$PACKAGE_VERSION/build"
-

@@ -1,9 +1,18 @@
+etherlabmaster (1:1.5.2~git20210927+tormach) bullseye; urgency=low
+
+  * Update packaging to compat number 12
+  * Add libethercat-dev package
+  * Update basic drivers to work under 5.10.x Linux kernel (shipped in Debian 11 Bullseye)
+  * Merge in available patches for upstream EtherlabMaster tree
+
+ -- Jakub Fišer <jakub.fiser@eryaf.com>  Mon, 27 Sep 2021 15:00:00 +0200
+
 etherlabmaster (1:1.5~git20190614.1+gl20190904.1+mds20210617.1) buster; urgency=low
 
   * moved to git
   * restructured version numbering
 
- -- Sascha Ittner <sascha.ittner@modusoft.de>  Tue, 17 Jun 2021 17:45:42 +0200
+ -- Sascha Ittner <sascha.ittner@modusoft.de>  Thu, 17 Jun 2021 17:45:42 +0200
 
 etherlabmaster (1.5.2+20190904hg33b922p8ea394-1) lucid; urgency=low
 

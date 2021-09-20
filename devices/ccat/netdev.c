@@ -545,6 +545,7 @@ static int ccat_eth_priv_init_dma(struct ccat_eth_priv *priv)
 #else
 	    dma_zalloc_coherent(dma->dev, dma->size, &dma->phys, GFP_KERNEL);
 #endif
+
 	if (!dma->base || !dma->phys) {
 		pr_err("init DMA memory failed.\n");
 		return -ENOMEM;

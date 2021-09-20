@@ -1,0 +1,2 @@
+usr/lib/*/cmake/EtherCATConfig.cmake
+usr/lib/*/pkgconfig/libethercat.pc
