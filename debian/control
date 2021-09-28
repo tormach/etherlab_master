@@ -10,8 +10,7 @@ Build-Depends: debhelper (>= 12),
                automake,
                libtool,
                quilt,
-               pkg-config,
-               linux-headers-amd64 | linux-headers-rt-amd64
+               pkg-config
 Standards-Version: 2.1.0
 
 Package: libethercat
@@ -31,7 +30,8 @@ Replaces: ethercat, etherlabmaster
 Conflicts: ethercat, etherlabmaster
 Provides: ethercat, etherlabmaster
 Architecture: any
-Depends: ${shlibs:Depends}, dkms, procps, ifupdown, linux-headers-amd64 | linux-headers-rt-amd64
+Depends: ${shlibs:Depends}, dkms, procps, ifupdown
+Recommends:  linux-headers-rt-amd64
 Description: IgH EtherCAT master for Linux
 
 Package: etherlabmaster-tools

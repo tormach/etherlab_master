@@ -3,22 +3,19 @@
 VERSION ?= $(shell dpkg-parsechangelog --show-field Version | sed 's/.*://')
 
 include /usr/share/dpkg/architecture.mk
-HEADERS = $(shell /bin/ls -d \
-	/usr/src/linux-headers-*-generic \
-	/usr/src/linux-headers-*-$(DEB_BUILD_ARCH) 2>/dev/null \
-	| head -1)
-ifneq (,$(HEADERS))
-CONFFLAGS += --with-linux-dir=$(HEADERS)
-endif
-
-CONFFLAGS += --disable-eoe --enable-sii-assign
 
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-	CONFFLAGS += --enable-kernel --enable-generic \
-		--enable-ccat --disable-igb --disable-8139too \
-		--disable-e100 --disable-e1000 --disable-e1000e \
-		--enable-hrtimer --enable-rtmutex \
-		--with-systemdsystemunitdir=systemd
+# Don't actually configure the kernel build:  headers may not be
+# installed at package build time, and the `dkms` module takes care of
+# building modules at package installation time.
+CONFFLAGS += --disable-kernel
+# Do, however, enable the `generic` module build:  this generates the
+# correct `Kbuild` file so that the module will be build by `dkms`.
+CONFFLAGS += --enable-generic
+# The `eoe` module was disabled in @sittner's original packaging
+CONFFLAGS += --disable-eoe
+# Other options not related to enabling kmods
+CONFFLAGS += --enable-hrtimer --enable-rtmutex --enable-sii-assign
 endif
 
 default:
