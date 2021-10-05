@@ -113,7 +113,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc FEATURES
 %doc INSTALL
 %doc NEWS
-%doc README
+%doc README.md
 %doc README.EoE
 /etc/init.d/ethercat
 /etc/sysconfig/ethercat

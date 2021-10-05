@@ -41,7 +41,7 @@ AC_PREREQ(2.59)
 #
 AC_INIT([ethercat],[1.5.2],[fp@igh-essen.com])
 AC_CONFIG_AUX_DIR([autoconf])
-AM_INIT_AUTOMAKE([-Wall -Wno-override -Werror dist-bzip2 subdir-objects])
+AM_INIT_AUTOMAKE([-Wall -Wno-override -Werror dist-bzip2 subdir-objects tar-ustar foreign])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([config.h.in])
