@@ -2,7 +2,8 @@ etherlabmaster (1:1.5.2~git20210927+tormach) bullseye; urgency=low
 
   * Update packaging to compat number 12
   * Add libethercat-dev package
-  * Update basic drivers to work under 5.10.x Linux kernel (shipped in Debian 11 Bullseye)
+  * Update basic drivers to work under 5.10.x Linux kernel
+    (shipped in Debian 11 Bullseye)
   * Merge in available patches for upstream EtherlabMaster tree
 
  -- Jakub Fišer <jakub.fiser@eryaf.com>  Mon, 27 Sep 2021 15:00:00 +0200

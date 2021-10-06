@@ -1,2 +1,5 @@
+usr/include/*.h
+usr/lib/*/libethercat.a
+usr/lib/*/libethercat.la
 usr/lib/*/cmake/EtherCATConfig.cmake
 usr/lib/*/pkgconfig/libethercat.pc

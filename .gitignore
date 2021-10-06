@@ -49,10 +49,10 @@ debian/*.service
 debian/*.substvars
 debian/autoreconf.*
 debian/debhelper-build-stamp
-debian/etherlabmaster-dev/
+debian/libethercat1
+debian/libethercat1-dev/
 debian/etherlabmaster-dkms/
 debian/etherlabmaster-tools/
 debian/files
-debian/libethercat/
 debian/tmp
 INSTALL

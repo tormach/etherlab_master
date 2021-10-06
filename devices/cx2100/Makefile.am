@@ -51,6 +51,6 @@ modules_install:
 		INSTALL_MOD_DIR="$(INSTALL_MOD_DIR)" modules_install
 
 clean-local:
-	$(MAKE) -i -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" clean
+	if [[ "$(LINUX_SOURCE_DIR)" != "" ]]; then $(MAKE) -i -C "$(LINUX_SOURCE_DIR)" M="@abs_srcdir@" clean; fi
 
 #------------------------------------------------------------------------------

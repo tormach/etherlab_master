@@ -40,7 +40,7 @@ override_dh_missing:
 	dh_missing --fail-missing
 
 override_dh_installsystemd:
-	mv debian/tmpsystemd/ethercat.service debian/etherlabmaster-dkms.ethercat.service
+	mv debian/tmp/lib/systemd/system/ethercat.service debian/etherlabmaster-dkms.ethercat.service
 	dh_installsystemd --name=ethercat
 
 override_dh_install:

@@ -10,20 +10,21 @@ Build-Depends: debhelper (>= 12),
                automake,
                libtool,
                quilt,
-               pkg-config
-Standards-Version: 2.1.0
+               pkg-config,
+               systemd
+Standards-Version: 4.5.1
+Homepage: https://tormach.com
 
-Package: libethercat
+
+Package: libethercat1
+Replaces: libethercat
+Conflicts: libethercat
 Architecture: any
 Multi-Arch: same
 Depends: ${shlibs:Depends}
-Description: IgH EtherCAT master for Linux shared libraries
-
-Package: libethercat-dev
-Architecture: any
-Multi-Arch: same
-Depends: ${shlibs:Depends}
-Description: IgH EtherCAT master for Linux - libraries, development files
+Description: IgH EtherCAT master for Tormach PathPilot shared libraries
+ This package contains the shared libraries needed for EtherLab EtherCAT master
+ software, Tormach PathPilot edition,
 
 Package: etherlabmaster-dkms
 Replaces: ethercat, etherlabmaster
@@ -32,18 +33,24 @@ Provides: ethercat, etherlabmaster
 Architecture: any
 Depends: ${shlibs:Depends}, dkms, procps, ifupdown
 Recommends:  linux-headers-rt-amd64
-Description: IgH EtherCAT master for Linux
+Description: IgH EtherCAT master for Tormach PathPilot kernel modules
+ EtherLab EtherCAT master kernel modules for Linux, Tormach PathPilot edition.
+ Distributed as compilable source files with DKMS framework
 
 Package: etherlabmaster-tools
 Architecture: any
-Depends: ${shlibs:Depends}, libethercat
-Description: IgH EtherCAT master for Linux utilitie
+Depends: ${shlibs:Depends}, libethercat1
+Description: IgH EtherCAT master for Tormach PathPilot utilities and supporting executables
+ This package contains helper executables and tools for EtherLab EtherCAT master,
+ Tormach PathPilot edition.
 
-Package: etherlabmaster-dev
-Replaces: ethercat-dev, etherlabmaster-dev
-Conflicts: ethercat-dev, etherlabmaster-dev
+Package: libethercat1-dev
+Replaces: ethercat-dev, etherlabmaster-dev,libethercat-dev
+Conflicts: ethercat-dev, etherlabmaster-dev, libethercat-dev
 Provides: ethercat-dev, etherlabmaster-dev
 Architecture: any
-Depends: etherlabmaster-dkms
-Description: IgH EtherCAT master for Linux (development files)
-
+Multi-Arch: same
+Depends: ${shlibs:Depends}, libethercat1
+Description: IgH EtherCAT master for Tormach PathPilot development files and static libraries
+ This package contains the development files (headers, shared libraries and configuration
+ files) 
